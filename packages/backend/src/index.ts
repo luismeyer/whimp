@@ -1,26 +1,20 @@
-import { ApolloServer, gql } from "apollo-server-lambda";
+import "reflect-metadata";
+
 import {
-  ApolloServerPluginLandingPageGraphQLPlayground,
   ApolloServerPluginLandingPageDisabled,
+  ApolloServerPluginLandingPageGraphQLPlayground,
 } from "apollo-server-core";
+import { ApolloServer } from "apollo-server-lambda";
+import { buildSchemaSync } from "type-graphql";
 
-// Construct a schema, using GraphQL schema language
-const typeDefs = gql`
-  type Query {
-    hello: String
-  }
-`;
+import { FlatResolver } from "./graphql/flat.resolver";
 
-// Provide resolver functions for your schema fields
-const resolvers = {
-  Query: {
-    hello: () => "Hello world!",
-  },
-};
+const schema = buildSchemaSync({
+  resolvers: [FlatResolver],
+});
 
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+  schema,
   context: ({ event, context, express }) => ({
     headers: event.headers,
     functionName: context.functionName,

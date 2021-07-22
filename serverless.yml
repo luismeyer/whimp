@@ -1,18 +1,21 @@
 service: whimp
 
 provider:
+  lambdaHashingVersion: 20201221
   name: aws
   runtime: nodejs14.x
   region: eu-central-1
   stage: dev
   environment:
     DYNAMODB_TABLE: ${self:service}-${self:provider.stage}
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - dynamodb:GetItem
-        - dynamodb:UpdateItem
-      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:GetItem
+            - dynamodb:UpdateItem
+          Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
 plugins:
   - serverless-jetpack
@@ -23,6 +26,7 @@ custom:
     trace: true
   serverless-offline:
     useChildProcesses: true
+    noPrependStageInUrl: true
 
 functions:
   backend:
@@ -34,11 +38,11 @@ functions:
 
 resources:
   Resources:
-    NicknamesTable:
+    FlatTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
         KeySchema:
-          - AttributeName: email
+          - AttributeName: id
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
