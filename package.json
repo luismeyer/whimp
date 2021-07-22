@@ -10,12 +10,15 @@
     ]
   },
   "scripts": {
-    "dev": "yarn workspaces -p run dev",
-    "watch": "tsc -w"
+    "dev": "concurrently -c blue,red 'yarn workspaces -tp run dev' 'sls offline start'",
+    "watch": "yarn workspaces -tp run watch",
+    "build": "yarn workspaces -tp run build"
   },
   "keywords": [],
   "license": "ISC",
   "devDependencies": {
-    "typescript": "^4.3.5"
+    "concurrently": "^6.2.0",
+    "serverless-jetpack": "^0.11.1",
+    "serverless-offline": "^7.0.0"
   }
 }

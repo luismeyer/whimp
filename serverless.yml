@@ -4,6 +4,7 @@ provider:
   name: aws
   runtime: nodejs14.x
   region: eu-central-1
+  stage: dev
   environment:
     DYNAMODB_TABLE: ${self:service}-${self:provider.stage}
   iamRoleStatements:
@@ -13,12 +14,22 @@ provider:
         - dynamodb:UpdateItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
+plugins:
+  - serverless-jetpack
+  - serverless-offline
+
+custom:
+  jetpack:
+    trace: true
+  serverless-offline:
+    useChildProcesses: true
+
 functions:
   backend:
-    handler: packages/backend/handler.query
+    handler: packages/backend/dist/index.handler
     events:
       - http:
-          path: query
+          path: graphql
           method: any
 
 resources:

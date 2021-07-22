@@ -4,7 +4,16 @@
   "main": "index.js",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "watch": "tsc -w",
+    "build": "tsc",
+    "dev": "echo 'backend dev'"
+  },
   "dependencies": {
-    "apollo-server-lambda": "^3.0.2"
+    "apollo-server-lambda": "^3.0.2",
+    "graphql": "^15.5.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.3.5"
   }
 }
