@@ -1,0 +1,35 @@
+service: whimp
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: eu-central-1
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:UpdateItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+
+functions:
+  backend:
+    handler: packages/backend/handler.query
+    events:
+      - http:
+          path: query
+          method: any
+
+resources:
+  Resources:
+    NicknamesTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        KeySchema:
+          - AttributeName: email
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}

@@ -1,0 +1,21 @@
+{
+  "name": "whimp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "scripts": {
+    "dev": "yarn workspaces -p run dev",
+    "watch": "tsc -w"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.3.5"
+  }
+}
