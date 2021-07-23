@@ -8,6 +8,8 @@ provider:
   stage: dev
   environment:
     DYNAMODB_TABLE: ${self:service}-${self:provider.stage}
+    EMAIL_LSI: emailLSI
+    TOKEN_LSI: tokenLSI
   iam:
     role:
       statements:
@@ -19,6 +21,7 @@ provider:
 
 plugins:
   - serverless-jetpack
+  - serverless-dynamodb-local
   - serverless-offline
 
 custom:
@@ -27,6 +30,12 @@ custom:
   serverless-offline:
     useChildProcesses: true
     noPrependStageInUrl: true
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8000
+      migrate: true
 
 functions:
   backend:
@@ -38,13 +47,41 @@ functions:
 
 resources:
   Resources:
-    FlatTable:
-      Type: "AWS::DynamoDB::Table"
+    MainTable:
+      Type: AWS::DynamoDB::Table
       Properties:
-        KeySchema:
+        AttributeDefinitions:
+          - AttributeName: type
+            AttributeType: S
           - AttributeName: id
+            AttributeType: S
+          - AttributeName: email
+            AttributeType: S
+          - AttributeName: token
+            AttributeType: S
+        KeySchema:
+          - AttributeName: type
             KeyType: HASH
+          - AttributeName: id
+            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+        LocalSecondaryIndexes:
+          - IndexName: ${self:provider.environment.EMAIL_LSI}
+            KeySchema:
+              - AttributeName: type
+                KeyType: HASH
+              - AttributeName: email
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+          - IndexName: ${self:provider.environment.TOKEN_LSI}
+            KeySchema:
+              - AttributeName: type
+                KeyType: HASH
+              - AttributeName: token
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
         TableName: ${self:provider.environment.DYNAMODB_TABLE}

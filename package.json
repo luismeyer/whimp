@@ -12,12 +12,14 @@
   "scripts": {
     "dev": "concurrently -c blue,red 'yarn workspaces -tp run dev' 'sls offline start'",
     "watch": "yarn workspaces -tp run watch",
-    "build": "yarn workspaces -tp run build"
+    "build": "yarn workspaces -tp run build",
+    "db:install": "sls dynamodb install"
   },
   "keywords": [],
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^6.2.0",
+    "serverless-dynamodb-local": "^0.2.40",
     "serverless-jetpack": "^0.11.1",
     "serverless-offline": "^7.0.0"
   }

@@ -1,16 +1,28 @@
-import { Arg, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, Mutation, Query, Resolver } from "type-graphql";
+import { v4 } from "uuid";
 
 import { Flat } from "../entities/flat.entity";
+import { flatById, createFlat } from "../services/flat.service";
 
 @Resolver(Flat)
 export class FlatResolver {
-  @Query(() => Flat)
-  findFlat(@Arg("email", () => String) email: string) {
-    const flat = new Flat();
-    flat.floor = 0;
-    flat.id = "1";
-    flat.residents = [];
+  @Authorized()
+  @Query(() => Flat, { nullable: true })
+  async findFlat(@Arg("id") id: string) {
+    const res = await flatById(id);
 
-    return flat;
+    return res;
+  }
+
+  @Authorized()
+  @Mutation(() => Flat)
+  async createFlat() {
+    const flat = new Flat();
+    flat.id = v4();
+    flat.floor = 0;
+
+    const res = await createFlat(flat);
+
+    return res;
   }
 }

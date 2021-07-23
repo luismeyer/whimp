@@ -1,15 +1,12 @@
-import { Field, ID, ObjectType } from "type-graphql";
-
-import { Resident } from "./resident.entity";
+import { Field, ObjectType } from "type-graphql";
 
 @ObjectType()
 export class Flat {
-  @Field(() => ID)
+  @Field()
   id!: string;
 
-  @Field(() => [Resident])
-  residents!: Resident[];
-
-  @Field(() => Number, { nullable: true })
+  @Field({ nullable: true })
   floor?: number;
+
+  type = "Flat";
 }
