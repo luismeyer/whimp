@@ -11,7 +11,7 @@ provider:
     EMAIL_GSI: emailGSI
     TOKEN_GSI: tokenGSI
     TYPE_GSI: typeGSI
-    BUCKET_NAME: ${self:service}-image-bucket
+    BUCKET_NAME: ${self:service}-{self:custom.stage}-image-bucket
   iam:
     role:
       statements:
