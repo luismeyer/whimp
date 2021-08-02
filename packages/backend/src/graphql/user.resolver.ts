@@ -41,7 +41,6 @@ export class UserResolver {
     user.token = v4();
     const newUser = await updateObject(user, "token");
 
-    console.log("new", newUser);
     ctx.express.res.setHeader(
       "Set-Cookie",
       `${authCookie}=${newUser.token ?? ""}`

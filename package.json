@@ -10,16 +10,18 @@
     ]
   },
   "scripts": {
-    "dev": "concurrently -c blue,red 'yarn workspaces -tp run dev' 'sls offline start'",
-    "watch": "yarn workspaces -tp run watch",
-    "build": "yarn workspaces -tp run build",
+    "dev": "concurrently -c blue,red 'lerna run --parallel dev' 'sls offline start'",
+    "watch": "lerna run --parallel watch",
+    "build": "lerna run --parallel build",
     "db:install": "sls dynamodb install"
   },
   "keywords": [],
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^6.2.0",
+    "lerna": "^4.0.0",
     "serverless-dynamodb-local": "^0.2.40",
+    "serverless-finch": "^2.6.0",
     "serverless-jetpack": "^0.11.1",
     "serverless-offline": "^7.0.0"
   }

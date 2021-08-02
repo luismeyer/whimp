@@ -5,3 +5,7 @@ dist-ssr
 *.local
 tsconfig.tsbuildinfo
 .dynamodb
+.yarn
+.pnp.js
+.serverless
+.env

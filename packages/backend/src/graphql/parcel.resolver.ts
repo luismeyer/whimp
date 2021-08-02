@@ -1,28 +1,59 @@
-import { Arg, Authorized, Mutation, Resolver } from "type-graphql";
-import FuzzySearch from "fuzzy-search";
+import { Arg, Authorized, Ctx, Mutation, Resolver } from "type-graphql";
 
 import { User } from "../entities/user.entity";
-import { allUsers } from "../services/user.service";
+import {
+  findParcelOwnerByText,
+  findParcelOwnersByName,
+} from "../services/parcel.service";
+import { allUsers, userById } from "../services/user.service";
+import { deleteItem, getItem } from "../bucket";
+import { detectText } from "../recognition";
+import { GraphQLError } from "graphql";
+import { sendNotificationEmail } from "../services/email.service";
+import { AuthorizedContext } from "..";
 
 @Resolver()
 export class ParcelResolver {
   @Mutation(() => [User], { nullable: true })
   @Authorized()
-  async acceptParcel(
+  async findOwners(
     @Arg("firstname") firstname: string,
     @Arg("lastname") lastname: string
   ): Promise<User[]> {
     const users = await allUsers();
 
-    const searcher = new FuzzySearch(users, ["firstname", "lastname"]);
+    return findParcelOwnersByName(users, firstname, lastname);
+  }
 
-    const matches = [
-      ...searcher.search(firstname),
-      ...searcher.search(lastname),
-    ];
+  @Mutation(() => [User], { nullable: true })
+  @Authorized()
+  async findOwnersByImage(
+    @Arg("filename") filename: string
+  ): Promise<User[] | undefined> {
+    const text = await detectText(filename);
 
-    return matches.filter((elem, pos) => {
-      return matches.indexOf(elem) == pos;
-    });
+    await deleteItem(filename);
+
+    const users = await allUsers();
+
+    if (!text) {
+      return;
+    }
+
+    return findParcelOwnerByText(users, text);
+  }
+
+  @Mutation(() => Boolean)
+  @Authorized()
+  async acceptParcel(@Arg("id") id: string, @Ctx() ctx: AuthorizedContext) {
+    const user = await userById(id);
+
+    if (!user) {
+      throw new GraphQLError("Wrong user id");
+    }
+
+    sendNotificationEmail(ctx.user, user);
+
+    return true;
   }
 }

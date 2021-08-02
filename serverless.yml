@@ -7,9 +7,11 @@ provider:
   region: eu-central-1
   stage: dev
   environment:
-    DYNAMODB_TABLE: ${self:service}-${self:provider.stage}
-    EMAIL_LSI: emailLSI
-    TOKEN_LSI: tokenLSI
+    DYNAMODB_TABLE: ${self:service}-${self:custom.stage}
+    EMAIL_GSI: emailGSI
+    TOKEN_GSI: tokenGSI
+    TYPE_GSI: typeGSI
+    BUCKET_NAME: ${self:service}-image-bucket
   iam:
     role:
       statements:
@@ -18,15 +20,26 @@ provider:
             - dynamodb:GetItem
             - dynamodb:UpdateItem
           Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+        - Effect: Allow
+          Action:
+            - dynamodb:PutObject
+            - dynamodb:DeleteObject
+          Resource: "arn:aws:s3:::${self:provider.environment.BUCKET_NAME}"
+  apiGateway:
+    binaryMediaTypes:
+      - '*/*'
 
 plugins:
   - serverless-jetpack
+  - serverless-finch
   - serverless-dynamodb-local
   - serverless-offline
 
 custom:
+  stage: ${opt:stage, self:provider.stage}
   jetpack:
-    trace: true
+    preInclude:
+      - "!**"
   serverless-offline:
     useChildProcesses: true
     noPrependStageInUrl: true
@@ -36,6 +49,24 @@ custom:
     start:
       port: 8000
       migrate: true
+      seed: true
+    seed:
+      main:
+        sources:
+          - table: ${self:provider.environment.DYNAMODB_TABLE}
+            sources: [./packages/backend/db/seed.json]
+  s3:
+    port: 4000
+    host: localhost
+    directory: /tmp
+  client:
+    bucketName: whimp-frontend
+    distributionFolder: packages/frontend/dist
+    indexDocument: index.html
+    errorDocument: index.html
+
+package:
+  individually: true
 
 functions:
   backend:
@@ -44,9 +75,84 @@ functions:
       - http:
           path: graphql
           method: any
+    package:
+      include:
+        - 'packages/backend/**'
+    jetpack:
+      roots:
+        - '.'
+        - 'packages/backend'
+
+  upload:
+    handler: packages/upload-image/dist/index.handler
+    timeout: 30
+    events:
+      - http:
+          path: upload
+          method: any
+    package:
+      include:
+        - 'packages/upload-image/**'
+    jetpack:
+      roots:
+        - '.'
+        - 'packages/upload-image'
 
 resources:
   Resources:
+
+    FrontendProxyMethod:
+      Type: 'AWS::ApiGateway::Method'
+      Properties:
+        HttpMethod: ANY
+        ResourceId: 
+          Fn::GetAtt:
+            - ApiGatewayRestApi
+            - RootResourceId
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        AuthorizationType: NONE
+        Integration:
+          IntegrationHttpMethod: ANY
+          Type: HTTP_PROXY
+          Uri: http://${self:custom.client.bucketName}.s3-website.eu-central-1.amazonaws.com/
+          PassthroughBehavior: WHEN_NO_MATCH
+          IntegrationResponses:
+            - StatusCode: 200
+              
+    FrontendProxyResource:
+      Type: AWS::ApiGateway::Resource
+      Properties:
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        ParentId:
+          Fn::GetAtt:
+            - ApiGatewayRestApi
+            - RootResourceId
+        PathPart: '{proxy+}'
+
+    FrontendProxyResourceMethod:
+      Type: 'AWS::ApiGateway::Method'
+      Properties:
+        HttpMethod: ANY
+        ResourceId: 
+          Ref: FrontendProxyResource
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        AuthorizationType: NONE
+        Integration:
+          IntegrationHttpMethod: ANY
+          Type: HTTP_PROXY
+          Uri: http://${self:custom.client.bucketName}.s3-website.eu-central-1.amazonaws.com/{proxy}
+          PassthroughBehavior: WHEN_NO_MATCH
+          IntegrationResponses:
+            - StatusCode: 200
+
+    S3ImageBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.BUCKET_NAME}
+
     MainTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -60,28 +166,32 @@ resources:
           - AttributeName: token
             AttributeType: S
         KeySchema:
-          - AttributeName: type
-            KeyType: HASH
           - AttributeName: id
+            KeyType: HASH
+          - AttributeName: type
             KeyType: RANGE
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-        LocalSecondaryIndexes:
-          - IndexName: ${self:provider.environment.EMAIL_LSI}
+        BillingMode: PAY_PER_REQUEST
+        GlobalSecondaryIndexes:
+          - IndexName: ${self:provider.environment.EMAIL_GSI}
             KeySchema:
-              - AttributeName: type
-                KeyType: HASH
               - AttributeName: email
+                KeyType: HASH
+              - AttributeName: type
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL
-          - IndexName: ${self:provider.environment.TOKEN_LSI}
+          - IndexName: ${self:provider.environment.TOKEN_GSI}
+            KeySchema:
+              - AttributeName: token
+                KeyType: HASH
+              - AttributeName: type
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+          - IndexName: ${self:provider.environment.TYPE_GSI}
             KeySchema:
               - AttributeName: type
                 KeyType: HASH
-              - AttributeName: token
-                KeyType: RANGE
             Projection:
               ProjectionType: ALL
         TableName: ${self:provider.environment.DYNAMODB_TABLE}

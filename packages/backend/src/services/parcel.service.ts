@@ -1,23 +1,35 @@
-import FuzzySearch from "fuzzy-search";
+import { fuzzy, search } from "fast-fuzzy";
+
 import { User } from "../entities/user.entity";
 
-const matchesAll = (value: User, ...arrays: User[][]) => {
-  arrays.map((array) => {});
-};
-
-export const findParcelOwner = (
+export const findParcelOwnersByName = (
   users: User[],
   firstname: string,
   lastname: string
-) => {
-  const searcher = new FuzzySearch(users, ["firstname", "lastname"]);
+): User[] => {
+  const firstnameMatches = search(firstname, users, {
+    keySelector: (user) => user.firstname,
+  });
 
-  const firstnameMatches = searcher.search(firstname);
-  const lastnameMatches = searcher.search(lastname);
+  const lastnameMatches = search(lastname, users, {
+    keySelector: (user) => user.lastname,
+  });
 
   const matches = [...firstnameMatches, ...lastnameMatches];
 
   return matches.filter((elem, pos) => {
     return matches.indexOf(elem) == pos;
+  });
+};
+
+export const findParcelOwnerByText = (
+  users: User[],
+  parcelText: string
+): User[] => {
+  return users.filter((user) => {
+    const firstNameRanking = fuzzy(user.firstname, parcelText);
+    const lastNameRanking = fuzzy(user.lastname, parcelText);
+
+    return firstNameRanking + lastNameRanking > 1.5;
   });
 };

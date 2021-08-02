@@ -1,11 +1,21 @@
-import { documentClient, dynamodbTable, emailLSI, tokenLSI } from "../db";
+import {
+  documentClient,
+  dynamodbTable,
+  emailIndex,
+  tokenIndex,
+  typeIndex,
+} from "../db";
 import { User } from "../entities/user.entity";
 
-export const userByLSI = async (lsi: string, key: string, value: unknown) => {
+export const userByIndex = async (
+  index: string,
+  key: string,
+  value: unknown
+) => {
   const { Items } = await documentClient
     .query({
       TableName: dynamodbTable,
-      IndexName: lsi,
+      IndexName: index,
       ExpressionAttributeValues: {
         ":rangeIndexValue": value,
         ":userType": "User",
@@ -26,11 +36,25 @@ export const userByLSI = async (lsi: string, key: string, value: unknown) => {
   return Items[0] as User;
 };
 
+export const userById = async (id: string) => {
+  const { Item } = await documentClient
+    .get({
+      TableName: dynamodbTable,
+      Key: {
+        id,
+        type: "User",
+      },
+    })
+    .promise();
+
+  return Item as User | undefined;
+};
+
 export const userByEmail = async (email: string): Promise<User | undefined> =>
-  userByLSI(emailLSI, "email", email);
+  userByIndex(emailIndex, "email", email);
 
 export const userByToken = async (token: string): Promise<User | undefined> =>
-  userByLSI(tokenLSI, "token", token);
+  userByIndex(tokenIndex, "token", token);
 
 export const createUser = async (newUser: User): Promise<User | undefined> => {
   const { $response } = await documentClient
@@ -51,13 +75,14 @@ export const allUsers = async (): Promise<User[]> => {
   const { Items } = await documentClient
     .query({
       TableName: dynamodbTable,
+      IndexName: typeIndex,
+      ExpressionAttributeValues: {
+        ":userType": "User",
+      },
       ExpressionAttributeNames: {
         "#type": "type",
       },
-      ExpressionAttributeValues: {
-        ":type": "User",
-      },
-      KeyConditionExpression: "#type = :type",
+      KeyConditionExpression: "#type = :userType",
     })
     .promise();
 

@@ -1,18 +1,32 @@
 <template>
   <img alt="Vue logo" src="./assets/logo.png" />
+  <input type="file" ref="file" v-on:change.stop="onImageChange()" />
   <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import HelloWorld from './components/HelloWorld.vue'
+import { defineComponent } from "vue";
+import HelloWorld from "./components/HelloWorld.vue";
+import { apiUrl } from "./utils/api";
+
+function onImageChange() {
+  const [file] = this.$refs.file.files;
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  fetch(`${apiUrl}/upload`, { method: "POST", body: formData });
+}
 
 export default defineComponent({
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-})
+    HelloWorld,
+  },
+  methods: {
+    onImageChange,
+  },
+});
 </script>
 
 <style>

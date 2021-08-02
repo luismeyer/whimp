@@ -1,21 +1,27 @@
 import { DynamoDB } from "aws-sdk";
 
-const { DYNAMODB_TABLE, IS_OFFLINE, EMAIL_LSI, TOKEN_LSI } = process.env;
+const { DYNAMODB_TABLE, IS_OFFLINE, EMAIL_GSI, TOKEN_GSI, TYPE_GSI } =
+  process.env;
 
 if (!DYNAMODB_TABLE) {
   throw new Error("Missing env Var: 'DYNAMODB_TABLE'");
 }
 
-if (!EMAIL_LSI) {
-  throw new Error("Missing env Var: 'EMAIL_LSI'");
+if (!EMAIL_GSI) {
+  throw new Error("Missing env Var: 'EMAIL_GSI'");
 }
 
-if (!TOKEN_LSI) {
-  throw new Error("Missing env Var: 'TOKEN_LSI'");
+if (!TOKEN_GSI) {
+  throw new Error("Missing env Var: 'TOKEN_GSI'");
 }
 
-export const tokenLSI = TOKEN_LSI;
-export const emailLSI = EMAIL_LSI;
+if (!TYPE_GSI) {
+  throw new Error("Missing env Var: 'TYPE_GSI'");
+}
+
+export const tokenIndex = TOKEN_GSI;
+export const emailIndex = EMAIL_GSI;
+export const typeIndex = TYPE_GSI;
 
 export const dynamodbTable = DYNAMODB_TABLE;
 

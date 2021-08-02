@@ -20,7 +20,7 @@ export const flatById = async (id: string): Promise<Flat | undefined> => {
   const { Item } = await documentClient
     .get({
       TableName: dynamodbTable,
-      Key: { type: "User", id },
+      Key: { type: "Flat", id },
     })
     .promise();
 
