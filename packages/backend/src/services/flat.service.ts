@@ -1,4 +1,4 @@
-import { documentClient, dynamodbTable } from "../db";
+import { adressIndex, documentClient, dynamodbTable } from "../db";
 import { Flat } from "../entities/flat.entity";
 
 export const createFlat = async (newFlat: Flat): Promise<Flat | undefined> => {
@@ -29,4 +29,31 @@ export const flatById = async (id: string): Promise<Flat | undefined> => {
   }
 
   return Item as Flat;
+};
+
+export const flatsByAdress = async (
+  postalCode: string,
+  street: string,
+  houseNumber: string
+) => {
+  const { Items } = await documentClient
+    .query({
+      TableName: dynamodbTable,
+      IndexName: adressIndex,
+      ExpressionAttributeNames: {
+        "#street": "street",
+        "#postalCode": "postalCode",
+        "#houseNumber": "houseNumber",
+      },
+      ExpressionAttributeValues: {
+        ":street": street,
+        ":postalCode": postalCode,
+        ":houseNumber": houseNumber,
+      },
+      KeyConditionExpression: "#street = :street and #postalCode = :postalCode",
+      FilterExpression: "#houseNumber = :houseNumber",
+    })
+    .promise();
+
+  return Items as Flat[] | undefined;
 };

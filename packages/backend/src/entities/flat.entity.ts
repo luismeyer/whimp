@@ -8,5 +8,11 @@ export class Flat {
   @Field({ nullable: true })
   floor?: number;
 
-  type = "Flat";
+  street!: string;
+
+  houseNumber!: string;
+
+  postalCode!: string;
+
+  type: "Flat" = "Flat";
 }

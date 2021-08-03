@@ -10,8 +10,9 @@ provider:
     DYNAMODB_TABLE: ${self:service}-${self:custom.stage}
     EMAIL_GSI: emailGSI
     TOKEN_GSI: tokenGSI
-    TYPE_GSI: typeGSI
-    BUCKET_NAME: ${self:service}-{self:custom.stage}-image-bucket
+    TYPE_FLATID_GSI: typeFlatIdGSI
+    ADRESS_GSI: adressGSI
+    BUCKET_NAME: ${self:service}-${self:custom.stage}-image-bucket
   iam:
     role:
       statements:
@@ -165,6 +166,12 @@ resources:
             AttributeType: S
           - AttributeName: token
             AttributeType: S
+          - AttributeName: flatId
+            AttributeType: S
+          - AttributeName: street
+            AttributeType: S
+          - AttributeName: postalCode
+            AttributeType: S
         KeySchema:
           - AttributeName: id
             KeyType: HASH
@@ -176,22 +183,28 @@ resources:
             KeySchema:
               - AttributeName: email
                 KeyType: HASH
-              - AttributeName: type
-                KeyType: RANGE
             Projection:
               ProjectionType: ALL
           - IndexName: ${self:provider.environment.TOKEN_GSI}
             KeySchema:
               - AttributeName: token
                 KeyType: HASH
-              - AttributeName: type
-                KeyType: RANGE
             Projection:
               ProjectionType: ALL
-          - IndexName: ${self:provider.environment.TYPE_GSI}
+          - IndexName: ${self:provider.environment.TYPE_FLATID_GSI}
             KeySchema:
               - AttributeName: type
                 KeyType: HASH
+              - AttributeName: flatId
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+          - IndexName: ${self:provider.environment.ADRESS_GSI}
+            KeySchema:
+              - AttributeName: street
+                KeyType: HASH
+              - AttributeName: postalCode
+                KeyType: RANGE
             Projection:
               ProjectionType: ALL
         TableName: ${self:provider.environment.DYNAMODB_TABLE}

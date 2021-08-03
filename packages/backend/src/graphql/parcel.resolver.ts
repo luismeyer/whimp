@@ -5,12 +5,13 @@ import {
   findParcelOwnerByText,
   findParcelOwnersByName,
 } from "../services/parcel.service";
-import { allUsers, userById } from "../services/user.service";
-import { deleteItem, getItem } from "../bucket";
+import { usersByFlats, userById } from "../services/user.service";
+import { deleteItem } from "../bucket";
 import { detectText } from "../recognition";
 import { GraphQLError } from "graphql";
 import { sendNotificationEmail } from "../services/email.service";
 import { AuthorizedContext } from "..";
+import { flatsByAdress } from "../services/flat.service";
 
 @Resolver()
 export class ParcelResolver {
@@ -18,9 +19,26 @@ export class ParcelResolver {
   @Authorized()
   async findOwners(
     @Arg("firstname") firstname: string,
-    @Arg("lastname") lastname: string
+    @Arg("lastname") lastname: string,
+    @Ctx() { user }: AuthorizedContext
   ): Promise<User[]> {
-    const users = await allUsers();
+    const flat = await user.flat();
+
+    if (!flat) {
+      throw new GraphQLError("You need a flat to accept a parcel");
+    }
+
+    const flats = await flatsByAdress(
+      flat.postalCode,
+      flat.street,
+      flat.houseNumber
+    );
+
+    if (!flats) {
+      throw new GraphQLError("Error querying flats");
+    }
+
+    const users = await usersByFlats(flats.filter((f) => f.id !== flat.id));
 
     return findParcelOwnersByName(users, firstname, lastname);
   }
@@ -28,13 +46,30 @@ export class ParcelResolver {
   @Mutation(() => [User], { nullable: true })
   @Authorized()
   async findOwnersByImage(
-    @Arg("filename") filename: string
+    @Arg("filename") filename: string,
+    @Ctx() { user }: AuthorizedContext
   ): Promise<User[] | undefined> {
+    const flat = await user.flat();
+
+    if (!flat) {
+      throw new GraphQLError("You need a flat to accept a parcel");
+    }
+
     const text = await detectText(filename);
 
     await deleteItem(filename);
 
-    const users = await allUsers();
+    const flats = await flatsByAdress(
+      flat.postalCode,
+      flat.street,
+      flat.houseNumber
+    );
+
+    if (!flats) {
+      throw new GraphQLError("Error querying flats");
+    }
+
+    const users = await usersByFlats(flats.filter((f) => f.id !== flat.id));
 
     if (!text) {
       return;

@@ -52,13 +52,18 @@ export class UserResolver {
   @Mutation(() => Boolean)
   async register(@Arg("data") data: RegisterUserInput): Promise<boolean> {
     const user = await userByEmail(data.email);
+    console.log("user", user);
 
     if (user) {
       throw new GraphQLError("User already exists");
     }
 
-    const newUser = await createUser(new User(data, loginToken()));
+    console.log("user", user);
+    const newUser = await createUser(
+      new User({ ...data, token: loginToken() })
+    );
 
+    console.log("user", user);
     if (!newUser) {
       return false;
     }

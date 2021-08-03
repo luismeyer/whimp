@@ -1,28 +1,62 @@
-import { Arg, Authorized, Mutation, Query, Resolver } from "type-graphql";
+import { GraphQLError } from "graphql";
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { v4 } from "uuid";
+import { AuthorizedContext } from "..";
+import { updateObject } from "../db";
 
 import { Flat } from "../entities/flat.entity";
-import { flatById, createFlat } from "../services/flat.service";
+import { User } from "../entities/user.entity";
+import { flatById, createFlat, flatsByAdress } from "../services/flat.service";
+import { RegisterFlatInput } from "./register-flat.input";
 
 @Resolver(Flat)
 export class FlatResolver {
   @Authorized()
-  @Query(() => Flat, { nullable: true })
-  async findFlat(@Arg("id") id: string) {
-    const res = await flatById(id);
+  @Mutation(() => User)
+  async registerFlat(
+    @Arg("data") data: RegisterFlatInput,
+    @Ctx() { user }: AuthorizedContext
+  ): Promise<User> {
+    const existingFlats = await flatsByAdress(
+      data.postalCode,
+      data.street,
+      data.houseNumber
+    );
 
-    return res;
-  }
+    if (!existingFlats) {
+      throw new GraphQLError("Error querying flats");
+    }
 
-  @Authorized()
-  @Mutation(() => Flat)
-  async createFlat() {
+    const existingFlat = existingFlats.find((f) => f.floor === data.floor);
+
+    if (existingFlat) {
+      const userObject = await updateObject(
+        { ...user, flatId: existingFlat.id },
+        "flatId"
+      );
+
+      return new User(userObject);
+    }
+
     const flat = new Flat();
     flat.id = v4();
-    flat.floor = 0;
+    flat.floor = data.floor;
 
-    const res = await createFlat(flat);
+    flat.street = data.street;
+    flat.houseNumber = data.houseNumber;
+    flat.postalCode = data.postalCode;
 
-    return res;
+    const newFlat = await createFlat(flat);
+
+    if (!newFlat) {
+      throw new GraphQLError("Error creating flat");
+    }
+
+    const userObject = await updateObject(
+      { ...user, flatId: newFlat.id },
+      "flatId"
+    );
+
+    return new User(userObject);
   }
 }
