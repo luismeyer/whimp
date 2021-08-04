@@ -2,7 +2,8 @@ import { GraphQLError } from "graphql";
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { v4 } from "uuid";
 
-import { authCookie, AuthorizedContext, Context } from "../";
+import { AuthorizedContext, Context } from "../context";
+import { authCookie } from "../";
 import { updateObject } from "../db";
 import { User } from "../entities/user.entity";
 import { sendTokenEmail } from "../services/email.service";
@@ -46,24 +47,23 @@ export class UserResolver {
       `${authCookie}=${newUser.token ?? ""}`
     );
 
+    ctx.express.res.setHeader("authenticated", "true");
+
     return newUser;
   }
 
   @Mutation(() => Boolean)
   async register(@Arg("data") data: RegisterUserInput): Promise<boolean> {
     const user = await userByEmail(data.email);
-    console.log("user", user);
 
     if (user) {
       throw new GraphQLError("User already exists");
     }
 
-    console.log("user", user);
     const newUser = await createUser(
       new User({ ...data, token: loginToken() })
     );
 
-    console.log("user", user);
     if (!newUser) {
       return false;
     }
@@ -77,5 +77,10 @@ export class UserResolver {
   @Authorized()
   currentUser(@Ctx() ctx: AuthorizedContext): User {
     return ctx.user;
+  }
+
+  @Query()
+  isAuthenticated(@Ctx() ctx: AuthorizedContext): Boolean {
+    return Boolean(ctx.user);
   }
 }

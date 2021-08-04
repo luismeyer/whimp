@@ -5,12 +5,10 @@ import {
   ApolloServerPluginLandingPageGraphQLPlayground,
 } from "apollo-server-core";
 import { ApolloServer } from "apollo-server-lambda";
-import { APIGatewayProxyEvent, Context as AWSContext } from "aws-lambda";
 import { parse } from "cookie";
-import express from "express";
 import { buildSchemaSync } from "type-graphql";
 
-import { User } from "./entities/user.entity";
+import { Context, LambdaContext } from "./context";
 import { FlatResolver } from "./graphql/flat.resolver";
 import { ParcelResolver } from "./graphql/parcel.resolver";
 import { UserResolver } from "./graphql/user.resolver";
@@ -24,27 +22,6 @@ const schema = buildSchemaSync({
   resolvers: [FlatResolver, UserResolver, ParcelResolver],
   authChecker: ({ context }) => Boolean(context.user),
 });
-
-type ExpressContext = {
-  req: express.Request;
-  res: express.Response;
-};
-
-export type Context = {
-  express: ExpressContext;
-  user?: User;
-};
-
-export type AuthorizedContext = {
-  express: ExpressContext;
-  user: User;
-};
-
-export type LambdaContext = {
-  event: APIGatewayProxyEvent;
-  context: AWSContext;
-  express: ExpressContext;
-};
 
 const graphQLPlayground =
   STAGE === "production"
@@ -70,12 +47,26 @@ const server = new ApolloServer({
       return { express: express };
     }
 
+    const user = await userByToken(cookies[authCookie]);
+
+    if (user) {
+      express.res.setHeader("authenticated", "true");
+    }
+
     return {
       express: express,
-      user: await userByToken(cookies[authCookie]),
+      user,
     };
   },
   plugins: [graphQLPlayground],
 });
 
-export const handler = server.createHandler();
+export const handler = server.createHandler({
+  expressGetMiddlewareOptions: {
+    cors: {
+      origin: "*",
+      credentials: true,
+      exposedHeaders: "authenticated",
+    },
+  },
+});

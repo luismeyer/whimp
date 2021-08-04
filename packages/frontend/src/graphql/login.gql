@@ -1,0 +1,11 @@
+mutation login($token: String!) {
+  login(token: $token) {
+    id
+    firstname
+    lastname
+    flat {
+      id
+      floor
+    }
+  }
+}

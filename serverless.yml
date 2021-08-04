@@ -76,6 +76,7 @@ functions:
       - http:
           path: graphql
           method: any
+          cors: true
     package:
       include:
         - 'packages/backend/**'

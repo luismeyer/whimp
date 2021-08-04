@@ -1,12 +1,12 @@
 import { GraphQLError } from "graphql";
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, Ctx, Mutation, Resolver } from "type-graphql";
 import { v4 } from "uuid";
-import { AuthorizedContext } from "..";
-import { updateObject } from "../db";
 
+import { AuthorizedContext } from "../context";
+import { updateObject } from "../db";
 import { Flat } from "../entities/flat.entity";
 import { User } from "../entities/user.entity";
-import { flatById, createFlat, flatsByAdress } from "../services/flat.service";
+import { createFlat, flatsByAdress } from "../services/flat.service";
 import { RegisterFlatInput } from "./register-flat.input";
 
 @Resolver(Flat)

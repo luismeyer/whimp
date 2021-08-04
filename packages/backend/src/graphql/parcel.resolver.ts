@@ -1,17 +1,17 @@
+import { GraphQLError } from "graphql";
 import { Arg, Authorized, Ctx, Mutation, Resolver } from "type-graphql";
 
+import { deleteItem } from "../bucket";
+import { AuthorizedContext } from "../context";
 import { User } from "../entities/user.entity";
+import { detectText } from "../recognition";
+import { sendNotificationEmail } from "../services/email.service";
+import { flatsByAdress } from "../services/flat.service";
 import {
   findParcelOwnerByText,
   findParcelOwnersByName,
 } from "../services/parcel.service";
-import { usersByFlats, userById } from "../services/user.service";
-import { deleteItem } from "../bucket";
-import { detectText } from "../recognition";
-import { GraphQLError } from "graphql";
-import { sendNotificationEmail } from "../services/email.service";
-import { AuthorizedContext } from "..";
-import { flatsByAdress } from "../services/flat.service";
+import { userById, usersByFlats } from "../services/user.service";
 
 @Resolver()
 export class ParcelResolver {

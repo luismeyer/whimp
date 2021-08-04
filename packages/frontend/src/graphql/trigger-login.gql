@@ -1,0 +1,3 @@
+mutation triggerLogin($email: String!) {
+  triggerLogin(email: $email)
+}

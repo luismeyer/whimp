@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import vue from "@vitejs/plugin-vue";
+import reactRefresh from "@vitejs/plugin-react-refresh";
 
 const { STAGE } = process.env;
 
@@ -14,5 +14,5 @@ export default defineConfig({
   },
   base: `/${stage}/`,
   envDir: "../../",
-  plugins: [vue()],
+  plugins: [reactRefresh()],
 });
