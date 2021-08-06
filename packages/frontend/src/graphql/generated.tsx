@@ -14,17 +14,9 @@ export type Scalars = {
   Float: number;
 };
 
-export type Flat = {
-  __typename?: 'Flat';
-  id: Scalars['String'];
-  floor?: Maybe<Scalars['Float']>;
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   registerFlat: User;
-  findOwners?: Maybe<Array<User>>;
-  findOwnersByImage?: Maybe<Array<User>>;
   acceptParcel: Scalars['Boolean'];
   triggerLogin: Scalars['Boolean'];
   login?: Maybe<User>;
@@ -34,17 +26,6 @@ export type Mutation = {
 
 export type MutationRegisterFlatArgs = {
   data: RegisterFlatInput;
-};
-
-
-export type MutationFindOwnersArgs = {
-  lastname: Scalars['String'];
-  firstname: Scalars['String'];
-};
-
-
-export type MutationFindOwnersByImageArgs = {
-  filename: Scalars['String'];
 };
 
 
@@ -69,8 +50,21 @@ export type MutationRegisterArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  findOwners?: Maybe<Array<User>>;
+  findOwnersByImage: Array<User>;
   currentUser: User;
   isAuthenticated: Scalars['Boolean'];
+};
+
+
+export type QueryFindOwnersArgs = {
+  lastname: Scalars['String'];
+  firstname: Scalars['String'];
+};
+
+
+export type QueryFindOwnersByImageArgs = {
+  filename: Scalars['String'];
 };
 
 export type RegisterFlatInput = {
@@ -91,15 +85,17 @@ export type User = {
   id: Scalars['String'];
   firstname: Scalars['String'];
   lastname: Scalars['String'];
-  flat?: Maybe<Flat>;
+  floor?: Maybe<Scalars['Float']>;
 };
 
-export type IsAuthenticatedQueryVariables = Exact<{ [key: string]: never; }>;
+export type AcceptParcelMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
 
 
-export type IsAuthenticatedQuery = (
-  { __typename?: 'Query' }
-  & Pick<Query, 'isAuthenticated'>
+export type AcceptParcelMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'acceptParcel'>
 );
 
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
@@ -109,11 +105,7 @@ export type CurrentUserQuery = (
   { __typename?: 'Query' }
   & { currentUser: (
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'lastname' | 'firstname'>
-    & { flat?: Maybe<(
-      { __typename?: 'Flat' }
-      & Pick<Flat, 'floor'>
-    )> }
+    & Pick<User, 'id' | 'lastname' | 'firstname' | 'floor'>
   ) }
 );
 
@@ -126,12 +118,35 @@ export type LoginMutation = (
   { __typename?: 'Mutation' }
   & { login?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'firstname' | 'lastname'>
-    & { flat?: Maybe<(
-      { __typename?: 'Flat' }
-      & Pick<Flat, 'id' | 'floor'>
-    )> }
+    & Pick<User, 'id' | 'firstname' | 'lastname' | 'floor'>
   )> }
+);
+
+export type FindOwnersByImageQueryVariables = Exact<{
+  filename: Scalars['String'];
+}>;
+
+
+export type FindOwnersByImageQuery = (
+  { __typename?: 'Query' }
+  & { findOwnersByImage: Array<(
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'firstname' | 'lastname'>
+  )> }
+);
+
+export type FindOwnersQueryVariables = Exact<{
+  firstname: Scalars['String'];
+  lastname: Scalars['String'];
+}>;
+
+
+export type FindOwnersQuery = (
+  { __typename?: 'Query' }
+  & { findOwners?: Maybe<Array<(
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'firstname' | 'lastname' | 'floor'>
+  )>> }
 );
 
 export type RegisterUserMutationVariables = Exact<{
@@ -157,47 +172,44 @@ export type TriggerLoginMutation = (
 );
 
 
-export const IsAuthenticatedDocument = gql`
-    query isAuthenticated {
-  isAuthenticated
+export const AcceptParcelDocument = gql`
+    mutation acceptParcel($id: String!) {
+  acceptParcel(id: $id)
 }
     `;
+export type AcceptParcelMutationFn = Apollo.MutationFunction<AcceptParcelMutation, AcceptParcelMutationVariables>;
 
 /**
- * __useIsAuthenticatedQuery__
+ * __useAcceptParcelMutation__
  *
- * To run a query within a React component, call `useIsAuthenticatedQuery` and pass it any options that fit your needs.
- * When your component renders, `useIsAuthenticatedQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
+ * To run a mutation, you first call `useAcceptParcelMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAcceptParcelMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
  *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const { data, loading, error } = useIsAuthenticatedQuery({
+ * const [acceptParcelMutation, { data, loading, error }] = useAcceptParcelMutation({
  *   variables: {
+ *      id: // value for 'id'
  *   },
  * });
  */
-export function useIsAuthenticatedQuery(baseOptions?: Apollo.QueryHookOptions<IsAuthenticatedQuery, IsAuthenticatedQueryVariables>) {
+export function useAcceptParcelMutation(baseOptions?: Apollo.MutationHookOptions<AcceptParcelMutation, AcceptParcelMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<IsAuthenticatedQuery, IsAuthenticatedQueryVariables>(IsAuthenticatedDocument, options);
+        return Apollo.useMutation<AcceptParcelMutation, AcceptParcelMutationVariables>(AcceptParcelDocument, options);
       }
-export function useIsAuthenticatedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IsAuthenticatedQuery, IsAuthenticatedQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<IsAuthenticatedQuery, IsAuthenticatedQueryVariables>(IsAuthenticatedDocument, options);
-        }
-export type IsAuthenticatedQueryHookResult = ReturnType<typeof useIsAuthenticatedQuery>;
-export type IsAuthenticatedLazyQueryHookResult = ReturnType<typeof useIsAuthenticatedLazyQuery>;
-export type IsAuthenticatedQueryResult = Apollo.QueryResult<IsAuthenticatedQuery, IsAuthenticatedQueryVariables>;
+export type AcceptParcelMutationHookResult = ReturnType<typeof useAcceptParcelMutation>;
+export type AcceptParcelMutationResult = Apollo.MutationResult<AcceptParcelMutation>;
+export type AcceptParcelMutationOptions = Apollo.BaseMutationOptions<AcceptParcelMutation, AcceptParcelMutationVariables>;
 export const CurrentUserDocument = gql`
     query currentUser {
   currentUser {
     id
-    flat {
-      floor
-    }
     lastname
     firstname
+    floor
   }
 }
     `;
@@ -234,10 +246,7 @@ export const LoginDocument = gql`
     id
     firstname
     lastname
-    flat {
-      id
-      floor
-    }
+    floor
   }
 }
     `;
@@ -267,6 +276,82 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const FindOwnersByImageDocument = gql`
+    query findOwnersByImage($filename: String!) {
+  findOwnersByImage(filename: $filename) {
+    id
+    firstname
+    lastname
+  }
+}
+    `;
+
+/**
+ * __useFindOwnersByImageQuery__
+ *
+ * To run a query within a React component, call `useFindOwnersByImageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindOwnersByImageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindOwnersByImageQuery({
+ *   variables: {
+ *      filename: // value for 'filename'
+ *   },
+ * });
+ */
+export function useFindOwnersByImageQuery(baseOptions: Apollo.QueryHookOptions<FindOwnersByImageQuery, FindOwnersByImageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindOwnersByImageQuery, FindOwnersByImageQueryVariables>(FindOwnersByImageDocument, options);
+      }
+export function useFindOwnersByImageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindOwnersByImageQuery, FindOwnersByImageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindOwnersByImageQuery, FindOwnersByImageQueryVariables>(FindOwnersByImageDocument, options);
+        }
+export type FindOwnersByImageQueryHookResult = ReturnType<typeof useFindOwnersByImageQuery>;
+export type FindOwnersByImageLazyQueryHookResult = ReturnType<typeof useFindOwnersByImageLazyQuery>;
+export type FindOwnersByImageQueryResult = Apollo.QueryResult<FindOwnersByImageQuery, FindOwnersByImageQueryVariables>;
+export const FindOwnersDocument = gql`
+    query findOwners($firstname: String!, $lastname: String!) {
+  findOwners(firstname: $firstname, lastname: $lastname) {
+    id
+    firstname
+    lastname
+    floor
+  }
+}
+    `;
+
+/**
+ * __useFindOwnersQuery__
+ *
+ * To run a query within a React component, call `useFindOwnersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindOwnersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindOwnersQuery({
+ *   variables: {
+ *      firstname: // value for 'firstname'
+ *      lastname: // value for 'lastname'
+ *   },
+ * });
+ */
+export function useFindOwnersQuery(baseOptions: Apollo.QueryHookOptions<FindOwnersQuery, FindOwnersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindOwnersQuery, FindOwnersQueryVariables>(FindOwnersDocument, options);
+      }
+export function useFindOwnersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindOwnersQuery, FindOwnersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindOwnersQuery, FindOwnersQueryVariables>(FindOwnersDocument, options);
+        }
+export type FindOwnersQueryHookResult = ReturnType<typeof useFindOwnersQuery>;
+export type FindOwnersLazyQueryHookResult = ReturnType<typeof useFindOwnersLazyQuery>;
+export type FindOwnersQueryResult = Apollo.QueryResult<FindOwnersQuery, FindOwnersQueryVariables>;
 export const RegisterUserDocument = gql`
     mutation registerUser($email: String!, $firstname: String!, $lastname: String!) {
   register(data: {email: $email, firstname: $firstname, lastname: $lastname})

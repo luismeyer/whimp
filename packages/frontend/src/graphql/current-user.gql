@@ -1,10 +1,8 @@
 query currentUser {
   currentUser {
     id
-    flat {
-      floor
-    }
     lastname
     firstname
+    floor
   }
 }

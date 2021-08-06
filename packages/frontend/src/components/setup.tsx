@@ -33,6 +33,7 @@ export const Setup: React.FC = () => {
   const {
     register,
     getValues,
+    handleSubmit,
     formState: { errors },
   } = useForm<{ email: string }>();
 
@@ -45,9 +46,13 @@ export const Setup: React.FC = () => {
       <h1>Setup</h1>
       {step === "email" && (
         <>
-          <form>
+          <form onSubmit={handleSubmit(triggerLogin)}>
             <label>Bitte gib deine Email an:</label>
-            <input type="text" {...register("email", { required: true })} />
+            <input
+              type="text"
+              {...register("email", { required: true })}
+              onSubmit={handleSubmit(triggerLogin)}
+            />
             {errors.email && <span>This field is required</span>}
           </form>
 

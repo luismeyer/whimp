@@ -3,9 +3,6 @@ mutation login($token: String!) {
     id
     firstname
     lastname
-    flat {
-      id
-      floor
-    }
+    floor
   }
 }

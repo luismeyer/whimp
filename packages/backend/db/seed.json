@@ -5,7 +5,11 @@
     "lastname": "Meyer",
     "email": "luis_meyer@outlook.de",
     "type": "User",
-    "token": "123"
+    "token": "123",
+    "street": "Prätoriusweg",
+    "houseNumber": "14",
+    "postalCode": "20255",
+    "floor": 1
   },
   {
     "id": "456",
@@ -37,6 +41,10 @@
     "lastname": "Menzel",
     "email": "anja@menzel.org",
     "type": "User",
-    "token": "ew"
+    "token": "ew",
+    "street": "Prätoriusweg",
+    "houseNumber": "14",
+    "postalCode": "20255",
+    "floor": 0
   }
 ]

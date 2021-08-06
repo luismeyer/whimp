@@ -1,81 +1,77 @@
 import { GraphQLError } from "graphql";
-import { Arg, Authorized, Ctx, Mutation, Resolver } from "type-graphql";
+import { Arg, Authorized, Ctx, Query, Resolver, Mutation } from "type-graphql";
 
-import { deleteItem } from "../bucket";
+import { deleteItem, existsItem } from "../bucket";
 import { AuthorizedContext } from "../context";
 import { User } from "../entities/user.entity";
 import { detectText } from "../recognition";
 import { sendNotificationEmail } from "../services/email.service";
-import { flatsByAdress } from "../services/flat.service";
+
 import {
   findParcelOwnerByText,
   findParcelOwnersByName,
 } from "../services/parcel.service";
-import { userById, usersByFlats } from "../services/user.service";
+import { userById, usersByAdress } from "../services/user.service";
 
 @Resolver()
 export class ParcelResolver {
-  @Mutation(() => [User], { nullable: true })
+  @Query(() => [User], { nullable: true })
   @Authorized()
   async findOwners(
     @Arg("firstname") firstname: string,
     @Arg("lastname") lastname: string,
     @Ctx() { user }: AuthorizedContext
   ): Promise<User[]> {
-    const flat = await user.flat();
-
-    if (!flat) {
-      throw new GraphQLError("You need a flat to accept a parcel");
+    if (!user.postalCode || !user.street || !user.houseNumber) {
+      throw new GraphQLError("You need to register your flat first");
     }
 
-    const flats = await flatsByAdress(
-      flat.postalCode,
-      flat.street,
-      flat.houseNumber
+    const users = await usersByAdress(
+      user.postalCode,
+      user.street,
+      user.houseNumber
     );
 
-    if (!flats) {
-      throw new GraphQLError("Error querying flats");
-    }
-
-    const users = await usersByFlats(flats.filter((f) => f.id !== flat.id));
-
-    return findParcelOwnersByName(users, firstname, lastname);
+    return findParcelOwnersByName(
+      users.filter(({ id }) => id !== user.id),
+      firstname,
+      lastname
+    );
   }
 
-  @Mutation(() => [User], { nullable: true })
+  @Query(() => [User])
   @Authorized()
   async findOwnersByImage(
     @Arg("filename") filename: string,
     @Ctx() { user }: AuthorizedContext
-  ): Promise<User[] | undefined> {
-    const flat = await user.flat();
-
-    if (!flat) {
-      throw new GraphQLError("You need a flat to accept a parcel");
+  ): Promise<User[]> {
+    const itemExistsInBucket = await existsItem(filename);
+    if (!itemExistsInBucket) {
+      throw new GraphQLError("Item not found");
     }
 
     const text = await detectText(filename);
 
     await deleteItem(filename);
 
-    const flats = await flatsByAdress(
-      flat.postalCode,
-      flat.street,
-      flat.houseNumber
+    if (!text) {
+      return [];
+    }
+
+    if (!user.postalCode || !user.street || !user.houseNumber) {
+      throw new GraphQLError("You need to register your flat first");
+    }
+
+    const users = await usersByAdress(
+      user.postalCode,
+      user.street,
+      user.houseNumber
     );
 
-    if (!flats) {
-      throw new GraphQLError("Error querying flats");
-    }
-
-    const users = await usersByFlats(flats.filter((f) => f.id !== flat.id));
-
-    if (!text) {
-      return;
-    }
-
-    return findParcelOwnerByText(users, text);
+    return findParcelOwnerByText(
+      users.filter(({ id }) => id !== user.id),
+      text
+    );
   }
 
   @Mutation(() => Boolean)

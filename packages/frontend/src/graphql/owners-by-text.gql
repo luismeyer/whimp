@@ -1,0 +1,8 @@
+query findOwners($firstname: String!, $lastname: String!) {
+  findOwners(firstname: $firstname, lastname: $lastname) {
+    id
+    firstname
+    lastname
+    floor
+  }
+}

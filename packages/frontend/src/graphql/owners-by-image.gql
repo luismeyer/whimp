@@ -1,0 +1,7 @@
+query findOwnersByImage($filename: String!) {
+  findOwnersByImage(filename: $filename) {
+    id
+    firstname
+    lastname
+  }
+}

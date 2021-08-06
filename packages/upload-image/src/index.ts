@@ -35,19 +35,23 @@ const compressImage = async (
 };
 
 export const handler: APIGatewayProxyHandler = async (event) => {
-  const result = await parser.parse(event);
-
-  const [file] = result.files;
-
-  const extenstionName = path.extname(file.filename);
+  let imageBuffer: Buffer | undefined;
   const filename = uniqid() + ".png";
 
-  const image = await compressImage(
-    file.content,
-    extenstionName === ".png"
-  ).catch(() => undefined);
+  if (event.body?.startsWith("data:image/png;base64")) {
+    const b64Buffer = event.body.replace(/^data:image\/png;base64,/, "");
+    imageBuffer = await compressImage(Buffer.from(b64Buffer, "base64"), true);
+  } else {
+    const result = await parser.parse(event);
 
-  if (!image) {
+    const [file] = result.files;
+
+    const extenstionName = path.extname(file.filename);
+
+    imageBuffer = await compressImage(file.content, extenstionName === ".png");
+  }
+
+  if (!imageBuffer) {
     return {
       statusCode: 400,
       body: JSON.stringify({
@@ -60,7 +64,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     .putObject({
       Bucket: BUCKET_NAME,
       Key: filename,
-      Body: image,
+      Body: imageBuffer,
     })
     .promise();
 

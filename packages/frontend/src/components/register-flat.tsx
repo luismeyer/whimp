@@ -14,12 +14,9 @@ export const RegisterFlat: React.FC<RegisterFlatProps> = ({ submit }) => {
     formState: { errors },
   } = useForm<RegisterFlatInput>();
 
-  const registerUser = React.useCallback(
-    (data: RegisterFlatInput) => {
-      submit();
-    },
-    [submit]
-  );
+  const registerUser = React.useCallback(() => {
+    submit();
+  }, [submit]);
 
   return (
     <form onSubmit={handleSubmit(registerUser)}>

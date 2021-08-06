@@ -1,11 +1,10 @@
 import {
+  adressIndex,
   documentClient,
   dynamodbTable,
   emailIndex,
   tokenIndex,
-  typeFlatIdIndex,
 } from "../db";
-import { Flat } from "../entities/flat.entity";
 import { User } from "../entities/user.entity";
 
 export const userByIndex = async (
@@ -40,7 +39,6 @@ export const userById = async (id: string) => {
       TableName: dynamodbTable,
       Key: {
         id,
-        type: "User",
       },
     })
     .promise();
@@ -73,26 +71,27 @@ export const createUser = async (newUser: User): Promise<User | undefined> => {
   return newUser;
 };
 
-export const usersByFlats = async (flats: Flat[]) => {
-  const allUsers = await Promise.all(flats.map(usersByFlat));
-
-  return allUsers.reduce((acc, users) => [...acc, ...users], []);
-};
-
-export const usersByFlat = async (flat: Flat): Promise<User[]> => {
+export const usersByAdress = async (
+  postalCode: string,
+  street: string,
+  houseNumber: string
+) => {
   const { Items } = await documentClient
     .query({
       TableName: dynamodbTable,
-      IndexName: typeFlatIdIndex,
-      ExpressionAttributeValues: {
-        ":userType": "User",
-        ":flatId": flat.id,
-      },
+      IndexName: adressIndex,
       ExpressionAttributeNames: {
-        "#type": "type",
-        "#flatId": "flatId",
+        "#street": "street",
+        "#postalCode": "postalCode",
+        "#houseNumber": "houseNumber",
       },
-      KeyConditionExpression: "#type = :userType and #flatId = :flatId",
+      ExpressionAttributeValues: {
+        ":street": street,
+        ":postalCode": postalCode,
+        ":houseNumber": houseNumber,
+      },
+      KeyConditionExpression: "#street = :street and #postalCode = :postalCode",
+      FilterExpression: "#houseNumber = :houseNumber",
     })
     .promise();
 
@@ -100,5 +99,5 @@ export const usersByFlat = async (flat: Flat): Promise<User[]> => {
     return [];
   }
 
-  return Items.map((item) => new User(item));
+  return Items as User[];
 };

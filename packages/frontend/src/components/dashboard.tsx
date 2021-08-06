@@ -1,6 +1,8 @@
 import React from "react";
-import { useAuthContext } from "../context/auth";
+import { Link } from "react-router-dom";
+import { IMAGE_ROUTE, TEXT_ROUTE } from "../App";
 
+import { useAuthContext } from "../context/auth";
 import { useCurrentUserQuery } from "../graphql/generated";
 
 export const Dashboard: React.FC = () => {
@@ -8,7 +10,6 @@ export const Dashboard: React.FC = () => {
 
   const { loading, data } = useCurrentUserQuery();
 
-  console.log(loading, data);
   if (authenticated === "loading" || loading) {
     return <span>loading...</span>;
   }
@@ -19,7 +20,11 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div>
-      <span>Hallo {data.currentUser.firstname}</span>
+      <h1>Hallo {data.currentUser.firstname}</h1>
+
+      <Link to={IMAGE_ROUTE}>Paket einscannen</Link>
+
+      <Link to={TEXT_ROUTE}>Paket-Daten eingeben</Link>
     </div>
   );
 };

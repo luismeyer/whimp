@@ -1,9 +1,6 @@
 import { Field, ObjectType } from "type-graphql";
 import { v4 } from "uuid";
 
-import { flatById } from "../services/flat.service";
-import { Flat } from "./flat.entity";
-
 @ObjectType()
 export class User {
   constructor(user: Partial<User>) {
@@ -14,7 +11,10 @@ export class User {
     this.firstname = user.firstname ?? "";
     this.lastname = user.lastname ?? "";
 
-    this.flatId = user.flatId;
+    this.floor = user.floor;
+    this.street = user.street ?? "";
+    this.houseNumber = user.houseNumber ?? "";
+    this.postalCode = user.postalCode ?? "";
   }
 
   @Field()
@@ -28,14 +28,14 @@ export class User {
   @Field()
   lastname!: string;
 
-  flatId?: string;
-
-  @Field(() => Flat, { nullable: true })
-  flat() {
-    return this.flatId ? flatById(this.flatId) : undefined;
-  }
+  @Field({ nullable: true })
+  floor?: number;
 
   token?: string;
 
-  type: "User" = "User";
+  street!: string;
+
+  houseNumber!: string;
+
+  postalCode!: string;
 }

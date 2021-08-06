@@ -10,7 +10,6 @@ provider:
     DYNAMODB_TABLE: ${self:service}-${self:custom.stage}
     EMAIL_GSI: emailGSI
     TOKEN_GSI: tokenGSI
-    TYPE_FLATID_GSI: typeFlatIdGSI
     ADRESS_GSI: adressGSI
     BUCKET_NAME: ${self:service}-${self:custom.stage}-image-bucket
   iam:
@@ -159,15 +158,11 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: type
-            AttributeType: S
           - AttributeName: id
             AttributeType: S
           - AttributeName: email
             AttributeType: S
           - AttributeName: token
-            AttributeType: S
-          - AttributeName: flatId
             AttributeType: S
           - AttributeName: street
             AttributeType: S
@@ -176,8 +171,6 @@ resources:
         KeySchema:
           - AttributeName: id
             KeyType: HASH
-          - AttributeName: type
-            KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         GlobalSecondaryIndexes:
           - IndexName: ${self:provider.environment.EMAIL_GSI}
@@ -190,14 +183,6 @@ resources:
             KeySchema:
               - AttributeName: token
                 KeyType: HASH
-            Projection:
-              ProjectionType: ALL
-          - IndexName: ${self:provider.environment.TYPE_FLATID_GSI}
-            KeySchema:
-              - AttributeName: type
-                KeyType: HASH
-              - AttributeName: flatId
-                KeyType: RANGE
             Projection:
               ProjectionType: ALL
           - IndexName: ${self:provider.environment.ADRESS_GSI}

@@ -39,3 +39,11 @@ export const deleteItem = async (filename: string): Promise<void> => {
 
   return;
 };
+
+export const existsItem = async (filename: string): Promise<boolean> => {
+  return s3Client
+    .headObject({ Bucket: bucketName, Key: filename })
+    .promise()
+    .then(() => true)
+    .catch(() => false);
+};
