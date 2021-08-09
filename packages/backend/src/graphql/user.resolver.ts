@@ -1,14 +1,14 @@
-import { GraphQLError } from 'graphql';
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
-import { v4 } from 'uuid';
+import { GraphQLError } from "graphql";
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import { v4 } from "uuid";
 
-import { authCookie } from '../';
-import { AuthorizedContext, Context } from '../context';
-import { updateObject } from '../db';
-import { User } from '../entities/user.entity';
-import { sendTokenEmail } from '../services/email.service';
-import { createUser, userByEmail, userByToken } from '../services/user.service';
-import { RegisterUserInput } from './register-user.input';
+import { authCookie } from "../";
+import { AuthorizedContext, Context } from "../context";
+import { updateObject } from "../db";
+import { User } from "../entities/user.entity";
+import { sendTokenEmail } from "../services/email.service";
+import { createUser, userByEmail, userByToken } from "../services/user.service";
+import { RegisterUserInput } from "./register-user.input";
 
 const loginToken = () => String(Math.round(Math.random() * 9000 + 1000));
 
@@ -77,8 +77,11 @@ export class UserResolver {
     return ctx.user;
   }
 
-  @Query()
-  isAuthenticated(@Ctx() ctx: AuthorizedContext): Boolean {
-    return Boolean(ctx.user);
+  @Mutation()
+  @Authorized()
+  logout(@Ctx() ctx: AuthorizedContext): boolean {
+    ctx.express.res.setHeader("Set-Cookie", "");
+
+    return true;
   }
 }

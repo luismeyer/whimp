@@ -1,21 +1,26 @@
-import React from 'react';
-import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from "react-router-dom";
 
-import { ApolloProvider } from '@apollo/client';
+import { ApolloProvider } from "@apollo/client";
 
-import { apolloClient } from './apollo-client';
-import { Error } from './components/error';
-import { Login } from './components/login';
-import { OwnersImage } from './components/owners-image';
-import { OwnersText } from './components/owners-text';
-import { LandingPage } from './components/page';
-import { ParcelImage } from './components/parcel-image';
-import { ParcelText } from './components/parcel-text';
-import { Register } from './components/register';
-import { Success } from './components/success';
+import { apolloClient } from "./apollo-client";
+import { Error } from "./components/error";
+import { Login } from "./components/login";
+import { OwnersImage } from "./components/owners-image";
+import { OwnersText } from "./components/owners-text";
+import { LandingPage } from "./components/page";
+import { ParcelImage } from "./components/parcel-image";
+import { ParcelText } from "./components/parcel-text";
+import { Register } from "./components/register";
+import { Success } from "./components/success";
 
 export const LOGIN_ROUTE = "/login";
-export const REGISTER_ROUTE = "/resister";
+export const REGISTER_ROUTE = "/register";
 
 export const IMAGE_ROUTE = "/search/image";
 export const TEXT_ROUTE = "/search/text";

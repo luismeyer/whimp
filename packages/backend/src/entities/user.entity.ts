@@ -1,5 +1,5 @@
-import { Field, ObjectType } from 'type-graphql';
-import { v4 } from 'uuid';
+import { Field, ObjectType } from "type-graphql";
+import { v4 } from "uuid";
 
 @ObjectType()
 export class User {
@@ -11,7 +11,7 @@ export class User {
     this.firstname = user.firstname ?? "";
     this.lastname = user.lastname ?? "";
 
-    this.floor = user.floor;
+    this.floor = user.floor ?? 0;
     this.street = user.street ?? "";
     this.houseNumber = user.houseNumber ?? "";
     this.postalCode = user.postalCode ?? "";
