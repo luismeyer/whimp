@@ -1,25 +1,26 @@
-import React from "react";
-import { useForm } from "react-hook-form";
+import React from 'react';
+import { useForm } from 'react-hook-form';
 
-import { RegisterFlatInput } from "../graphql/generated";
+import { RegisterUserInput } from '../graphql/generated';
 
 type RegisterFlatProps = {
-  submit: () => void;
+  submit: (data: FlatInput) => void;
 };
+
+export type FlatInput = Pick<
+  RegisterUserInput,
+  "postalCode" | "street" | "houseNumber" | "floor"
+>;
 
 export const RegisterFlat: React.FC<RegisterFlatProps> = ({ submit }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterFlatInput>();
-
-  const registerUser = React.useCallback(() => {
-    submit();
-  }, [submit]);
+  } = useForm<FlatInput>();
 
   return (
-    <form onSubmit={handleSubmit(registerUser)}>
+    <form onSubmit={handleSubmit(submit)}>
       <label>Postleitzahl</label>
       <input {...register("postalCode", { required: true })} />
       {errors.postalCode && <span>This field is required</span>}

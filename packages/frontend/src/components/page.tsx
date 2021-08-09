@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import { AuthenticatedContext, AuthState } from "../context/auth";
-import { useCurrentUserQuery } from "../graphql/generated";
-import { Dashboard } from "./dashboard";
-import { Setup } from "./setup";
+import { AuthenticatedContext, AuthState } from '../context/auth';
+import { useCurrentUserQuery } from '../graphql/generated';
+import { Dashboard } from './dashboard';
+import { Setup } from './setup';
 
 export const LandingPage: React.FC = () => {
   const { data, loading, error } = useCurrentUserQuery();

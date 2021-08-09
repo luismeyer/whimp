@@ -1,4 +1,4 @@
-import { S3 } from "aws-sdk";
+import { S3 } from 'aws-sdk';
 
 const { BUCKET_NAME } = process.env;
 

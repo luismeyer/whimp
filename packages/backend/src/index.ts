@@ -9,7 +9,6 @@ import { parse } from "cookie";
 import { buildSchemaSync } from "type-graphql";
 
 import { Context, LambdaContext } from "./context";
-import { FlatResolver } from "./graphql/flat.resolver";
 import { ParcelResolver } from "./graphql/parcel.resolver";
 import { UserResolver } from "./graphql/user.resolver";
 import { userByToken } from "./services/user.service";
@@ -19,7 +18,7 @@ const { STAGE, IS_OFFLINE } = process.env;
 export const authCookie = "whimp-auth";
 
 const schema = buildSchemaSync({
-  resolvers: [FlatResolver, UserResolver, ParcelResolver],
+  resolvers: [UserResolver, ParcelResolver],
   authChecker: ({ context }) => Boolean(context.user),
 });
 

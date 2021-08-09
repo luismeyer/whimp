@@ -1,4 +1,4 @@
-import { DynamoDB } from "aws-sdk";
+import { DynamoDB } from 'aws-sdk';
 
 const { DYNAMODB_TABLE, IS_OFFLINE, EMAIL_GSI, TOKEN_GSI, ADRESS_GSI } =
   process.env;

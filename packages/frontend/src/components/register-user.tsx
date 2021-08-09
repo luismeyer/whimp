@@ -1,40 +1,26 @@
-import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import {
-  RegisterUserInput,
-  useRegisterUserMutation,
-} from "../graphql/generated";
+import React, { useCallback, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+
+import { RegisterUserInput } from '../graphql/generated';
 
 type RegisterUserProps = {
-  submit: () => void;
+  submit: (data: UserInput) => void;
 };
+
+export type UserInput = Pick<
+  RegisterUserInput,
+  "email" | "firstname" | "lastname"
+>;
 
 export const RegisterUser: React.FC<RegisterUserProps> = ({ submit }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterUserInput>();
-
-  const [registerUserMutation, { loading, data }] = useRegisterUserMutation();
-
-  const registerUser = React.useCallback(
-    (data: RegisterUserInput) => {
-      registerUserMutation({ variables: data });
-    },
-    [submit]
-  );
-
-  useEffect(() => {
-    if (!loading || !data || errors) {
-      return;
-    }
-
-    submit();
-  }, [loading, data]);
+  } = useForm<UserInput>();
 
   return (
-    <form onSubmit={handleSubmit(registerUser)}>
+    <form onSubmit={handleSubmit(submit)}>
       <label>Email</label>
       <input {...register("email", { required: true })} />
       {errors.email && <span>This field is required</span>}

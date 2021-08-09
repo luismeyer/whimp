@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { useHistory } from "react-router";
+import React, { useCallback, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useHistory } from 'react-router';
 
-import { OWNERS_TEXT_ROUTE } from "../App";
-import { Gif } from "./gif";
+import { OWNERS_TEXT_ROUTE } from '../App';
+import { Gif } from './gif';
 
 type FindOwnersForm = {
   firstname: string;

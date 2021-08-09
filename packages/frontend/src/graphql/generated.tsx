@@ -16,16 +16,10 @@ export type Scalars = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  registerFlat: User;
   acceptParcel: Scalars['Boolean'];
   triggerLogin: Scalars['Boolean'];
   login?: Maybe<User>;
   register: Scalars['Boolean'];
-};
-
-
-export type MutationRegisterFlatArgs = {
-  data: RegisterFlatInput;
 };
 
 
@@ -67,17 +61,14 @@ export type QueryFindOwnersByImageArgs = {
   filename: Scalars['String'];
 };
 
-export type RegisterFlatInput = {
-  street: Scalars['String'];
-  houseNumber: Scalars['String'];
-  postalCode: Scalars['String'];
-  floor: Scalars['Float'];
-};
-
 export type RegisterUserInput = {
   email: Scalars['String'];
   firstname: Scalars['String'];
   lastname: Scalars['String'];
+  street: Scalars['String'];
+  houseNumber: Scalars['String'];
+  postalCode: Scalars['String'];
+  floor: Scalars['Float'];
 };
 
 export type User = {
@@ -150,9 +141,7 @@ export type FindOwnersQuery = (
 );
 
 export type RegisterUserMutationVariables = Exact<{
-  email: Scalars['String'];
-  firstname: Scalars['String'];
-  lastname: Scalars['String'];
+  data: RegisterUserInput;
 }>;
 
 
@@ -353,8 +342,8 @@ export type FindOwnersQueryHookResult = ReturnType<typeof useFindOwnersQuery>;
 export type FindOwnersLazyQueryHookResult = ReturnType<typeof useFindOwnersLazyQuery>;
 export type FindOwnersQueryResult = Apollo.QueryResult<FindOwnersQuery, FindOwnersQueryVariables>;
 export const RegisterUserDocument = gql`
-    mutation registerUser($email: String!, $firstname: String!, $lastname: String!) {
-  register(data: {email: $email, firstname: $firstname, lastname: $lastname})
+    mutation registerUser($data: RegisterUserInput!) {
+  register(data: $data)
 }
     `;
 export type RegisterUserMutationFn = Apollo.MutationFunction<RegisterUserMutation, RegisterUserMutationVariables>;
@@ -372,9 +361,7 @@ export type RegisterUserMutationFn = Apollo.MutationFunction<RegisterUserMutatio
  * @example
  * const [registerUserMutation, { data, loading, error }] = useRegisterUserMutation({
  *   variables: {
- *      email: // value for 'email'
- *      firstname: // value for 'firstname'
- *      lastname: // value for 'lastname'
+ *      data: // value for 'data'
  *   },
  * });
  */

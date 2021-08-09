@@ -1,11 +1,11 @@
-import React from "react";
-import { Redirect } from "react-router-dom";
+import React from 'react';
+import { Redirect } from 'react-router-dom';
 
-import { TEXT_ROUTE } from "../App";
-import { useFindOwnersQuery } from "../graphql/generated";
-import { useURLSearchParams } from "../hooks/use-query-params";
-import { Gif } from "./gif";
-import { Owners } from "./owners";
+import { TEXT_ROUTE } from '../App';
+import { useFindOwnersQuery } from '../graphql/generated';
+import { useURLSearchParams } from '../hooks/use-query-params';
+import { Gif } from './gif';
+import { Owners } from './owners';
 
 export const OwnersText: React.FC = () => {
   const query = useURLSearchParams();

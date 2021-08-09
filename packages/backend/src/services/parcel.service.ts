@@ -1,6 +1,6 @@
-import { fuzzy, search } from "fast-fuzzy";
+import { fuzzy, search } from 'fast-fuzzy';
 
-import { User } from "../entities/user.entity";
+import { User } from '../entities/user.entity';
 
 export const findParcelOwnersByName = (
   users: User[],

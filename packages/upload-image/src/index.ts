@@ -1,11 +1,11 @@
-import { APIGatewayProxyHandler } from "aws-lambda";
-import { S3 } from "aws-sdk";
-import imagemin from "imagemin";
-import imageminPngquant from "imagemin-pngquant";
-import parser from "lambda-multipart-parser";
-import path from "path";
-import sharp from "sharp";
-import uniqid from "uniqid";
+import { APIGatewayProxyHandler } from 'aws-lambda';
+import { S3 } from 'aws-sdk';
+import imagemin from 'imagemin';
+import imageminPngquant from 'imagemin-pngquant';
+import parser from 'lambda-multipart-parser';
+import path from 'path';
+import sharp from 'sharp';
+import uniqid from 'uniqid';
 
 const { BUCKET_NAME } = process.env;
 

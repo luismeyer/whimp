@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect } from "react";
-import { Link, useHistory } from "react-router-dom";
-import { ERROR_ROUTE, SUCCESS_ROUTE } from "../App";
-import { useAcceptParcelMutation, User } from "../graphql/generated";
-import { Gif } from "./gif";
+import React, { useCallback, useEffect } from 'react';
+import { Link, useHistory } from 'react-router-dom';
+
+import { ERROR_ROUTE, SUCCESS_ROUTE } from '../App';
+import { useAcceptParcelMutation, User } from '../graphql/generated';
+import { Gif } from './gif';
 
 type OwnersProps = {
   users: User[];

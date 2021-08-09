@@ -1,5 +1,6 @@
-import { Rekognition } from "aws-sdk";
-import { bucketName } from "./bucket";
+import { Rekognition } from 'aws-sdk';
+
+import { bucketName } from './bucket';
 
 const rekognition = new Rekognition({
   region: "eu-central-1",

@@ -1,12 +1,12 @@
-import React from "react";
-import { Redirect, useHistory } from "react-router-dom";
+import React from 'react';
+import { Redirect, useHistory } from 'react-router-dom';
 
-import { ERROR_ROUTE, IMAGE_ROUTE } from "../App";
-import { useAuthContext } from "../context/auth";
-import { useFindOwnersByImageQuery } from "../graphql/generated";
-import { useURLSearchParams } from "../hooks/use-query-params";
-import { Gif } from "./gif";
-import { Owners } from "./owners";
+import { ERROR_ROUTE, IMAGE_ROUTE } from '../App';
+import { useAuthContext } from '../context/auth';
+import { useFindOwnersByImageQuery } from '../graphql/generated';
+import { useURLSearchParams } from '../hooks/use-query-params';
+import { Gif } from './gif';
+import { Owners } from './owners';
 
 export const OwnersImage: React.FC = () => {
   const query = useURLSearchParams();

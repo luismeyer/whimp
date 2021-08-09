@@ -1,11 +1,5 @@
-import {
-  adressIndex,
-  documentClient,
-  dynamodbTable,
-  emailIndex,
-  tokenIndex,
-} from "../db";
-import { User } from "../entities/user.entity";
+import { adressIndex, documentClient, dynamodbTable, emailIndex, tokenIndex } from '../db';
+import { User } from '../entities/user.entity';
 
 export const userByIndex = async (
   index: string,

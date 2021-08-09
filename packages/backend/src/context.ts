@@ -1,7 +1,7 @@
-import { APIGatewayProxyEventV2, Context as AWSContext } from "aws-lambda";
-import express from "express";
+import { APIGatewayProxyEventV2, Context as AWSContext } from 'aws-lambda';
+import express from 'express';
 
-import { User } from "./entities/user.entity";
+import { User } from './entities/user.entity';
 
 export type ExpressContext = {
   req: express.Request;

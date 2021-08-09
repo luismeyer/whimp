@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import Webcam from "react-webcam";
-import { OWNERS_IMAGE_ROUTE } from "../App";
 
+import { OWNERS_IMAGE_ROUTE } from "../App";
 import { useFindOwnersByImageLazyQuery } from "../graphql/generated";
 import { apiUrl } from "../utils/const";
 import { Gif } from "./gif";
@@ -79,7 +79,11 @@ export const ParcelImage: React.FC = () => {
           {image ? (
             <img src={image} />
           ) : (
-            <Webcam screenshotFormat="image/png" ref={webcamRef} />
+            <Webcam
+              videoConstraints={{ facingMode: "environment" }}
+              screenshotFormat="image/png"
+              ref={webcamRef}
+            />
           )}
 
           <button onClick={takeImage}>Foto aufnemhmen</button>

@@ -1,9 +1,9 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { IMAGE_ROUTE, TEXT_ROUTE } from "../App";
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-import { useAuthContext } from "../context/auth";
-import { useCurrentUserQuery } from "../graphql/generated";
+import { IMAGE_ROUTE, TEXT_ROUTE } from '../App';
+import { useAuthContext } from '../context/auth';
+import { useCurrentUserQuery } from '../graphql/generated';
 
 export const Dashboard: React.FC = () => {
   const { authenticated } = useAuthContext();

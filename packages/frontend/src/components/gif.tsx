@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
 const GIFS = {
   Loading: "https://media.giphy.com/media/3y0oCOkdKKRi0/giphy.gif",

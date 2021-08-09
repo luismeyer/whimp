@@ -1,5 +1,5 @@
-import { Field, ObjectType } from "type-graphql";
-import { v4 } from "uuid";
+import { Field, ObjectType } from 'type-graphql';
+import { v4 } from 'uuid';
 
 @ObjectType()
 export class User {

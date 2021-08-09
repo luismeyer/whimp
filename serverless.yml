@@ -112,52 +112,28 @@ functions:
 resources:
   Resources:
 
-    # FrontendProxyMethod:
-    #   Type: 'AWS::ApiGateway::Method'
-    #   Properties:
-    #     HttpMethod: ANY
-    #     ResourceId: 
-    #       Fn::GetAtt:
-    #         - HttpApi
-    #         - RootResourceId
-    #     RestApiId:
-    #       Ref: HttpApi
-    #     AuthorizationType: NONE
-    #     Integration:
-    #       IntegrationHttpMethod: ANY
-    #       Type: HTTP_PROXY
-    #       Uri: http://${self:custom.client.bucketName}.s3-website.eu-central-1.amazonaws.com/
-    #       PassthroughBehavior: WHEN_NO_MATCH
-    #       IntegrationResponses:
-    #         - StatusCode: 200
-              
-    # FrontendProxyResource:
-    #   Type: AWS::ApiGateway::Resource
-    #   Properties:
-    #     RestApiId:
-    #       Ref: HttpApi
-    #     ParentId:
-    #       Fn::GetAtt:
-    #         - HttpApi
-    #         - RootResourceId
-    #     PathPart: '{proxy+}'
+    FrontendProxyRoute:
+      Type: AWS::ApiGatewayV2::Route
+      Properties: 
+        ApiId: 
+          Ref: HttpApi
+        RouteKey: ANY /{proxy+}
+        Target:
+          Fn::Join: 
+            - "/"
+            - - integrations
+              - Ref: FrontendProxyIntegration
 
-    # FrontendProxyResourceMethod:
-    #   Type: 'AWS::ApiGateway::Method'
-    #   Properties:
-    #     HttpMethod: ANY
-    #     ResourceId: 
-    #       Ref: FrontendProxyResource
-    #     RestApiId:
-    #       Ref: HttpApi
-    #     AuthorizationType: NONE
-    #     Integration:
-    #       IntegrationHttpMethod: ANY
-    #       Type: HTTP_PROXY
-    #       Uri: http://${self:custom.client.bucketName}.s3-website.eu-central-1.amazonaws.com/{proxy}
-    #       PassthroughBehavior: WHEN_NO_MATCH
-    #       IntegrationResponses:
-    #         - StatusCode: 200
+    FrontendProxyIntegration:   
+      Type: AWS::ApiGatewayV2::Integration
+      Properties: 
+        ApiId: 
+          Ref: HttpApi
+        IntegrationMethod: ANY
+        IntegrationType: HTTP_PROXY
+        IntegrationUri: http://${self:custom.client.bucketName}.s3-website.eu-central-1.amazonaws.com/{proxy}
+        PassthroughBehavior: WHEN_NO_MATCH
+        PayloadFormatVersion: '1.0'
 
     S3ImageBucket:
       Type: AWS::S3::Bucket

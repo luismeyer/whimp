@@ -12,4 +12,16 @@ export class RegisterUserInput implements Partial<User> {
 
   @Field()
   lastname!: string;
+
+  @Field()
+  street!: string;
+
+  @Field()
+  houseNumber!: string;
+
+  @Field()
+  postalCode!: string;
+
+  @Field()
+  floor!: number;
 }

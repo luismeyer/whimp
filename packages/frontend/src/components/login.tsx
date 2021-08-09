@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { useHistory } from "react-router";
+import React, { useCallback, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useHistory } from 'react-router';
 
-import { useAuthContext } from "../context/auth";
-import { useLoginMutation } from "../graphql/generated";
+import { useAuthContext } from '../context/auth';
+import { useLoginMutation } from '../graphql/generated';
 
 export const Login: React.FC = () => {
   const history = useHistory();

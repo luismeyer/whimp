@@ -1,8 +1,8 @@
-import { defineConfig } from "vite";
+import { defineConfig } from 'vite';
 
-import reactRefresh from "@vitejs/plugin-react-refresh";
+import reactRefresh from '@vitejs/plugin-react-refresh';
 
-import EnvVariables from "../../.env.json";
+import EnvVariables from '../../.env.json';
 
 const { API_URL: API_URL_FROM_FILE } = EnvVariables;
 const { API_URL: API_URL_FROM_ENV } = process.env;
