@@ -2,9 +2,10 @@ import { defineConfig } from "vite";
 
 import reactRefresh from "@vitejs/plugin-react-refresh";
 
-const { STAGE } = process.env;
+import EnvVariables from "../../.env.json";
 
-const stage = STAGE ?? "dev";
+const { API_URL: API_URL_FROM_FILE } = EnvVariables;
+const { API_URL: API_URL_FROM_ENV } = process.env;
 
 export default defineConfig({
   server: {
@@ -13,7 +14,10 @@ export default defineConfig({
   build: {
     assetsDir: "",
   },
-  base: `/${stage}/`,
-  envDir: "../../",
+  define: {
+    ENVIRONMENT: {
+      apiUrl: API_URL_FROM_ENV ?? API_URL_FROM_FILE,
+    },
+  },
   plugins: [reactRefresh()],
 });

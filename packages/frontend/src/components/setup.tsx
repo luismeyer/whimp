@@ -1,10 +1,10 @@
 import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useHistory } from "react-router";
+import { LOGIN_ROUTE, REGISTER_ROUTE } from "../App";
 import { useAuthContext } from "../context/auth";
 
 import { useTriggerLoginMutation } from "../graphql/generated";
-import { Login } from "./login";
-import { Register } from "./register";
 
 type Step = "email" | "login" | "register";
 
@@ -13,9 +13,16 @@ export const Setup: React.FC = () => {
 
   const { authenticated } = useAuthContext();
 
-  const [triggerLoginMutation] = useTriggerLoginMutation();
+  const [triggerLoginMutation, { loading }] = useTriggerLoginMutation();
 
-  const finishSetup = useCallback(() => {}, []);
+  const history = useHistory();
+
+  const {
+    register,
+    getValues,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<{ email: string }>();
 
   const triggerLogin = useCallback(async () => {
     const email = getValues("email");
@@ -26,16 +33,13 @@ export const Setup: React.FC = () => {
     });
 
     if (!result.errors && result.data?.triggerLogin) {
-      setStep("login");
+      history.push(LOGIN_ROUTE);
     }
-  }, []);
+  }, [triggerLoginMutation, history]);
 
-  const {
-    register,
-    getValues,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<{ email: string }>();
+  const triggerRegister = useCallback(() => {
+    history.push(REGISTER_ROUTE);
+  }, []);
 
   if (authenticated === "authenticated") {
     return null;
@@ -49,6 +53,7 @@ export const Setup: React.FC = () => {
           <form onSubmit={handleSubmit(triggerLogin)}>
             <label>Bitte gib deine Email an:</label>
             <input
+              disabled={loading}
               type="text"
               {...register("email", { required: true })}
               onSubmit={handleSubmit(triggerLogin)}
@@ -56,14 +61,14 @@ export const Setup: React.FC = () => {
             {errors.email && <span>This field is required</span>}
           </form>
 
-          <button onClick={triggerLogin}>einloggen</button>
-          <button onClick={() => setStep("register")}>registrieren</button>
+          <button disabled={loading} onClick={handleSubmit(triggerLogin)}>
+            einloggen
+          </button>
+          <button disabled={loading} onClick={triggerRegister}>
+            registrieren
+          </button>
         </>
       )}
-
-      {step === "login" && <Login />}
-
-      {step === "register" && <Register submit={finishSetup} />}
     </div>
   );
 };

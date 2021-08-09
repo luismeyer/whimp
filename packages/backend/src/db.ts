@@ -1,13 +1,7 @@
 import { DynamoDB } from "aws-sdk";
 
-const {
-  DYNAMODB_TABLE,
-  IS_OFFLINE,
-  EMAIL_GSI,
-  TOKEN_GSI,
-
-  ADRESS_GSI,
-} = process.env;
+const { DYNAMODB_TABLE, IS_OFFLINE, EMAIL_GSI, TOKEN_GSI, ADRESS_GSI } =
+  process.env;
 
 if (!DYNAMODB_TABLE) {
   throw new Error("Missing env Var: 'DYNAMODB_TABLE'");

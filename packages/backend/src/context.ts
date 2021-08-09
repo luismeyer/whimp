@@ -1,4 +1,4 @@
-import { APIGatewayProxyEvent, Context as AWSContext } from "aws-lambda";
+import { APIGatewayProxyEventV2, Context as AWSContext } from "aws-lambda";
 import express from "express";
 
 import { User } from "./entities/user.entity";
@@ -19,7 +19,7 @@ export type AuthorizedContext = {
 };
 
 export type LambdaContext = {
-  event: APIGatewayProxyEvent;
+  event: APIGatewayProxyEventV2;
   context: AWSContext;
   express: ExpressContext;
 };

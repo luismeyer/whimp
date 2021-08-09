@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   RegisterUserInput,
@@ -16,18 +16,22 @@ export const RegisterUser: React.FC<RegisterUserProps> = ({ submit }) => {
     formState: { errors },
   } = useForm<RegisterUserInput>();
 
-  const [registerUserMutation] = useRegisterUserMutation();
+  const [registerUserMutation, { loading, data }] = useRegisterUserMutation();
 
   const registerUser = React.useCallback(
-    async (data: RegisterUserInput) => {
-      const result = await registerUserMutation({ variables: data });
-
-      if (result.data && !result.errors) {
-        submit();
-      }
+    (data: RegisterUserInput) => {
+      registerUserMutation({ variables: data });
     },
     [submit]
   );
+
+  useEffect(() => {
+    if (!loading || !data || errors) {
+      return;
+    }
+
+    submit();
+  }, [loading, data]);
 
   return (
     <form onSubmit={handleSubmit(registerUser)}>
@@ -43,7 +47,7 @@ export const RegisterUser: React.FC<RegisterUserProps> = ({ submit }) => {
       <input {...register("lastname", { required: true })} />
       {errors.lastname && <span>This field is required</span>}
 
-      <input type="submit" />
+      <input type="submit" value="Abschicken" />
     </form>
   );
 };

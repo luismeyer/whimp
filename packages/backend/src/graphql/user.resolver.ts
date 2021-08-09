@@ -47,8 +47,6 @@ export class UserResolver {
       `${authCookie}=${newUser.token ?? ""}`
     );
 
-    ctx.express.res.setHeader("authenticated", "true");
-
     return newUser;
   }
 

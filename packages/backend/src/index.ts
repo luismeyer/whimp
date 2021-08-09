@@ -14,7 +14,7 @@ import { ParcelResolver } from "./graphql/parcel.resolver";
 import { UserResolver } from "./graphql/user.resolver";
 import { userByToken } from "./services/user.service";
 
-const { STAGE } = process.env;
+const { STAGE, IS_OFFLINE } = process.env;
 
 export const authCookie = "whimp-auth";
 
@@ -33,25 +33,19 @@ const graphQLPlayground =
 const server = new ApolloServer({
   schema,
   context: async ({ event, express }: LambdaContext): Promise<Context> => {
-    const {
-      headers: { Cookie },
-    } = event;
+    const { cookies } = event;
 
-    if (!Cookie) {
+    if (!cookies) {
       return { express: express };
     }
 
-    const cookies = parse(Cookie);
+    const parsedCookies = parse(cookies.join(","));
 
-    if (!cookies[authCookie]) {
+    if (!parsedCookies[authCookie]) {
       return { express: express };
     }
 
-    const user = await userByToken(cookies[authCookie]);
-
-    if (user) {
-      express.res.setHeader("authenticated", "true");
-    }
+    const user = await userByToken(parsedCookies[authCookie]);
 
     return {
       express: express,
@@ -64,9 +58,8 @@ const server = new ApolloServer({
 export const handler = server.createHandler({
   expressGetMiddlewareOptions: {
     cors: {
-      origin: "*",
-      credentials: true,
-      exposedHeaders: "authenticated",
+      origin: IS_OFFLINE && "http://localhost:8080",
+      credentials: Boolean(IS_OFFLINE),
     },
   },
 });

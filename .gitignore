@@ -8,4 +8,6 @@ tsconfig.tsbuildinfo
 .yarn
 .pnp.js
 .serverless
+.env.*
 .env
+client-dist

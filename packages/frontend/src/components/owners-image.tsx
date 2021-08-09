@@ -2,18 +2,20 @@ import React from "react";
 import { Redirect, useHistory } from "react-router-dom";
 
 import { ERROR_ROUTE, IMAGE_ROUTE } from "../App";
+import { useAuthContext } from "../context/auth";
 import { useFindOwnersByImageQuery } from "../graphql/generated";
 import { useURLSearchParams } from "../hooks/use-query-params";
 import { Gif } from "./gif";
 import { Owners } from "./owners";
 
 export const OwnersImage: React.FC = () => {
-  const history = useHistory();
-
   const query = useURLSearchParams();
+
+  const { authenticated } = useAuthContext();
+
   const filename = query.get("filename");
 
-  if (!filename) {
+  if (!filename || authenticated !== "authenticated") {
     return <Redirect to="/" />;
   }
 

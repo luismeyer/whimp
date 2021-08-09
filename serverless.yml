@@ -1,4 +1,5 @@
 service: whimp
+useDotenv: true
 
 provider:
   lambdaHashingVersion: 20201221
@@ -12,19 +13,7 @@ provider:
     TOKEN_GSI: tokenGSI
     ADRESS_GSI: adressGSI
     BUCKET_NAME: ${self:service}-${self:custom.stage}-image-bucket
-  iam:
-    role:
-      statements:
-        - Effect: Allow
-          Action:
-            - dynamodb:GetItem
-            - dynamodb:UpdateItem
-          Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
-        - Effect: Allow
-          Action:
-            - dynamodb:PutObject
-            - dynamodb:DeleteObject
-          Resource: "arn:aws:s3:::${self:provider.environment.BUCKET_NAME}"
+    STAGE: ${self:custom.stage}
   apiGateway:
     binaryMediaTypes:
       - '*/*'
@@ -33,16 +22,17 @@ plugins:
   - serverless-jetpack
   - serverless-finch
   - serverless-dynamodb-local
+  - serverless-iam-roles-per-function
   - serverless-offline
 
 custom:
   stage: ${opt:stage, self:provider.stage}
+
   jetpack:
     preInclude:
       - "!**"
   serverless-offline:
     useChildProcesses: true
-    noPrependStageInUrl: true
   dynamodb:
     stages:
       - dev
@@ -72,10 +62,9 @@ functions:
   backend:
     handler: packages/backend/dist/index.handler
     events:
-      - http:
-          path: graphql
-          method: any
-          cors: true
+      - httpApi:
+          path: /graphql
+          method: '*'
     package:
       include:
         - 'packages/backend/**'
@@ -83,14 +72,29 @@ functions:
       roots:
         - '.'
         - 'packages/backend'
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:GetItem
+          - dynamodb:UpdateItem
+          - dynamodb:Query
+          - dynamodb:Scan
+        Resource: 
+          - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+          - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}/index/*"
+      - Effect: Allow
+        Action:
+          - s3:PutObject
+          - s3:DeleteObject
+        Resource: 
+          - "arn:aws:s3:::${self:provider.environment.BUCKET_NAME}"
 
   upload:
     handler: packages/upload-image/dist/index.handler
-    timeout: 30
     events:
-      - http:
-          path: upload
-          method: any
+      - httpApi:
+          path: /upload
+          method: '*'
     package:
       include:
         - 'packages/upload-image/**'
@@ -98,56 +102,62 @@ functions:
       roots:
         - '.'
         - 'packages/upload-image'
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - s3:PutObject
+        Resource: 
+          - "arn:aws:s3:::${self:provider.environment.BUCKET_NAME}"
 
 resources:
   Resources:
 
-    FrontendProxyMethod:
-      Type: 'AWS::ApiGateway::Method'
-      Properties:
-        HttpMethod: ANY
-        ResourceId: 
-          Fn::GetAtt:
-            - ApiGatewayRestApi
-            - RootResourceId
-        RestApiId:
-          Ref: ApiGatewayRestApi
-        AuthorizationType: NONE
-        Integration:
-          IntegrationHttpMethod: ANY
-          Type: HTTP_PROXY
-          Uri: http://${self:custom.client.bucketName}.s3-website.eu-central-1.amazonaws.com/
-          PassthroughBehavior: WHEN_NO_MATCH
-          IntegrationResponses:
-            - StatusCode: 200
+    # FrontendProxyMethod:
+    #   Type: 'AWS::ApiGateway::Method'
+    #   Properties:
+    #     HttpMethod: ANY
+    #     ResourceId: 
+    #       Fn::GetAtt:
+    #         - HttpApi
+    #         - RootResourceId
+    #     RestApiId:
+    #       Ref: HttpApi
+    #     AuthorizationType: NONE
+    #     Integration:
+    #       IntegrationHttpMethod: ANY
+    #       Type: HTTP_PROXY
+    #       Uri: http://${self:custom.client.bucketName}.s3-website.eu-central-1.amazonaws.com/
+    #       PassthroughBehavior: WHEN_NO_MATCH
+    #       IntegrationResponses:
+    #         - StatusCode: 200
               
-    FrontendProxyResource:
-      Type: AWS::ApiGateway::Resource
-      Properties:
-        RestApiId:
-          Ref: ApiGatewayRestApi
-        ParentId:
-          Fn::GetAtt:
-            - ApiGatewayRestApi
-            - RootResourceId
-        PathPart: '{proxy+}'
+    # FrontendProxyResource:
+    #   Type: AWS::ApiGateway::Resource
+    #   Properties:
+    #     RestApiId:
+    #       Ref: HttpApi
+    #     ParentId:
+    #       Fn::GetAtt:
+    #         - HttpApi
+    #         - RootResourceId
+    #     PathPart: '{proxy+}'
 
-    FrontendProxyResourceMethod:
-      Type: 'AWS::ApiGateway::Method'
-      Properties:
-        HttpMethod: ANY
-        ResourceId: 
-          Ref: FrontendProxyResource
-        RestApiId:
-          Ref: ApiGatewayRestApi
-        AuthorizationType: NONE
-        Integration:
-          IntegrationHttpMethod: ANY
-          Type: HTTP_PROXY
-          Uri: http://${self:custom.client.bucketName}.s3-website.eu-central-1.amazonaws.com/{proxy}
-          PassthroughBehavior: WHEN_NO_MATCH
-          IntegrationResponses:
-            - StatusCode: 200
+    # FrontendProxyResourceMethod:
+    #   Type: 'AWS::ApiGateway::Method'
+    #   Properties:
+    #     HttpMethod: ANY
+    #     ResourceId: 
+    #       Ref: FrontendProxyResource
+    #     RestApiId:
+    #       Ref: HttpApi
+    #     AuthorizationType: NONE
+    #     Integration:
+    #       IntegrationHttpMethod: ANY
+    #       Type: HTTP_PROXY
+    #       Uri: http://${self:custom.client.bucketName}.s3-website.eu-central-1.amazonaws.com/{proxy}
+    #       PassthroughBehavior: WHEN_NO_MATCH
+    #       IntegrationResponses:
+    #         - StatusCode: 200
 
     S3ImageBucket:
       Type: AWS::S3::Bucket

@@ -36,7 +36,7 @@ export const RegisterFlat: React.FC<RegisterFlatProps> = ({ submit }) => {
       <input {...register("floor", { required: true })} />
       {errors.floor && <span>This field is required</span>}
 
-      <input type="submit" />
+      <input type="submit" value="Abschicken" />
     </form>
   );
 };
