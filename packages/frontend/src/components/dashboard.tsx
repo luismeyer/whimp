@@ -26,12 +26,16 @@ const StyledHeadline = styled.h1`
 export const Dashboard: React.FC = () => {
   const { authenticated, setAuthenticated } = useAuthContext();
 
-  const { loading, data } = useCurrentUserQuery();
+  const { loading, data, error } = useCurrentUserQuery();
 
   const [logoutMutation, { loading: logoutLoading, data: logoutData }] =
     useLogoutMutation();
 
   useEffect(() => {
+    if (error) {
+      setAuthenticated("unauthenticated");
+    }
+
     if (!logoutData) {
       return;
     }
@@ -48,7 +52,7 @@ export const Dashboard: React.FC = () => {
   }
 
   return (
-    <div>
+    <>
       <StyledHeader>
         <StyledHeadline>Hallo {data.currentUser.firstname}</StyledHeadline>
         <button onClick={() => logoutMutation()}>Logout</button>
@@ -58,6 +62,6 @@ export const Dashboard: React.FC = () => {
         <Link to={IMAGE_ROUTE}>Paket einscannen</Link>
         <Link to={TEXT_ROUTE}>Paket-Daten eingeben</Link>
       </StyledLinkContainer>
-    </div>
+    </>
   );
 };

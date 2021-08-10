@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import styled from "styled-components";
 
 import { RegisterUserInput } from "../graphql/generated";
 
@@ -9,6 +11,10 @@ type RegisterUserProps = {
 
 export type UserInput = Pick<RegisterUserInput, "firstname" | "lastname">;
 
+const StyledForm = styled.form`
+  display: grid;
+`;
+
 export const RegisterUser: React.FC<RegisterUserProps> = ({ submit }) => {
   const {
     register,
@@ -16,25 +22,33 @@ export const RegisterUser: React.FC<RegisterUserProps> = ({ submit }) => {
     formState: { errors },
   } = useForm<UserInput>();
 
+  useEffect(() => {
+    if (errors.firstname?.message) {
+      toast.error(errors.firstname.message, { id: "register-firstname" });
+    }
+
+    if (errors.lastname?.message) {
+      toast.error(errors.lastname.message, { id: "register-lastname" });
+    }
+  }, [errors.firstname, errors.lastname]);
+
   return (
-    <form onSubmit={handleSubmit(submit)}>
+    <StyledForm onSubmit={handleSubmit(submit)}>
       <label>Vorname</label>
       <input
         type="text"
         autoComplete="given-name"
-        {...register("firstname", { required: true })}
+        {...register("firstname", { required: "Bitte gib deinen Vornamen an" })}
       />
-      {errors.firstname && <span>This field is required</span>}
 
       <label>Nachname</label>
       <input
         type="text"
         autoComplete="family-name"
-        {...register("lastname", { required: true })}
+        {...register("lastname", { required: "Bitte gib deinen Nachnamen an" })}
       />
-      {errors.lastname && <span>This field is required</span>}
 
       <input type="submit" value="Abschicken" />
-    </form>
+    </StyledForm>
   );
 };

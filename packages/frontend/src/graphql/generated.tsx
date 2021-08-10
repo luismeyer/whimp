@@ -76,7 +76,7 @@ export type User = {
   id: Scalars['String'];
   firstname: Scalars['String'];
   lastname: Scalars['String'];
-  floor?: Maybe<Scalars['Float']>;
+  floor: Scalars['Float'];
 };
 
 export type AcceptParcelMutationVariables = Exact<{
@@ -130,7 +130,7 @@ export type FindOwnersByImageQuery = (
   { __typename?: 'Query' }
   & { findOwnersByImage: Array<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'firstname' | 'lastname'>
+    & Pick<User, 'id' | 'firstname' | 'lastname' | 'floor'>
   )> }
 );
 
@@ -309,6 +309,7 @@ export const FindOwnersByImageDocument = gql`
     id
     firstname
     lastname
+    floor
   }
 }
     `;

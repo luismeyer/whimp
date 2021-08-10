@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useHistory } from "react-router";
+import { Redirect, useHistory } from "react-router";
 
 import { ERROR_ROUTE, LOGIN_ROUTE } from "../App";
+import { Page } from "../components/page";
 import { FlatInput, RegisterFlat } from "../components/register-flat";
 import { RegisterUser, UserInput } from "../components/register-user";
 import { useRegisterUserMutation } from "../graphql/generated";
@@ -62,11 +63,11 @@ export const Register: React.FC<RegisterProps> = ({ submit }) => {
   }, []);
 
   if (!email) {
-    history.push("/");
+    return <Redirect to="/" />;
   }
 
   return (
-    <div>
+    <Page>
       <h1>Bitte gebe deine Daten an</h1>
 
       {loading && <span>loading...</span>}
@@ -78,6 +79,6 @@ export const Register: React.FC<RegisterProps> = ({ submit }) => {
       {!loading && step === "flat" && (
         <RegisterFlat submit={completeRegisterFlat} />
       )}
-    </div>
+    </Page>
   );
 };

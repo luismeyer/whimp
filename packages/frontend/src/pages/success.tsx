@@ -16,10 +16,10 @@ export const Success: React.FC = () => {
     <Page>
       <h1>Die Email wurde verschickt.</h1>
       <StyledContainer>
-        <Gif name="Success" />
         <span>
           Du kannst diese Seite jetzt <Link to="/">schließen</Link>
         </span>
+        <Gif name="Success" />
       </StyledContainer>
     </Page>
   );

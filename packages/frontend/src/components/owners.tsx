@@ -12,17 +12,9 @@ type OwnersProps = {
 };
 
 const StyledGif = styled.div`
-  position: relative;
-  display: flex;
+  display: grid;
+  grid-gap: 8px;
   justify-content: center;
-`;
-
-const StyledLink = styled(Link)`
-  position: absolute;
-  bottom: 16px;
-  color: white;
-  font-size: 26px;
-  font-weight: bold;
 `;
 
 export const Owners: React.FC<OwnersProps> = ({ users, link }) => {
@@ -39,7 +31,7 @@ export const Owners: React.FC<OwnersProps> = ({ users, link }) => {
   );
 
   useEffect(() => {
-    if (!data?.acceptParcel) {
+    if (loading || !data) {
       return;
     }
 
@@ -66,8 +58,8 @@ export const Owners: React.FC<OwnersProps> = ({ users, link }) => {
           <h1>Keine Nutzer gefunden</h1>
 
           <StyledGif>
+            <Link to={link}>Neuer Versuch</Link>
             <Gif name="NotFound" />
-            <StyledLink to={link}>Neuer Versuch</StyledLink>
           </StyledGif>
         </>
       ) : (

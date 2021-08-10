@@ -26,9 +26,7 @@ export class UserResolver {
 
     const updatedUser = await updateObject(user, "token");
 
-    await sendTokenEmail(updatedUser);
-
-    return true;
+    return sendTokenEmail(updatedUser);
   }
 
   @Mutation(() => User, { nullable: true })
@@ -66,9 +64,7 @@ export class UserResolver {
       return false;
     }
 
-    await sendTokenEmail(newUser);
-
-    return true;
+    return sendTokenEmail(newUser);
   }
 
   @Query()

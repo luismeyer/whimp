@@ -4,7 +4,7 @@ import { Page } from "../components/page";
 import { Setup } from "../components/setup";
 import { useAuthContext } from "../context/auth";
 import { useCurrentUserQuery } from "../graphql/generated";
-import { Dashboard } from "./dashboard";
+import { Dashboard } from "../components/dashboard";
 
 export const LandingPage: React.FC = () => {
   const { data, loading, error } = useCurrentUserQuery();

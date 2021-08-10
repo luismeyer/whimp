@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useHistory } from "react-router";
 import Webcam from "react-webcam";
 import styled from "styled-components";
 
-import { OWNERS_IMAGE_ROUTE } from "../App";
+import { ERROR_ROUTE, OWNERS_IMAGE_ROUTE } from "../App";
 import { Gif } from "../components/gif";
 import { Page } from "../components/page";
 import { apiUrl } from "../utils/const";
@@ -14,8 +14,6 @@ const StyledButtons = styled.div`
 `;
 
 export const ParcelImage: React.FC = () => {
-  const uploadRef = useRef<HTMLInputElement>(null);
-
   const webcamRef = React.useRef<Webcam>(null);
   const [image, setImage] = useState("");
 
@@ -30,11 +28,16 @@ export const ParcelImage: React.FC = () => {
       const result = await fetch(`${apiUrl}/upload`, {
         method: "POST",
         body,
-      }).then((res) => res.json());
+      })
+        .then((res) => res.json())
+        .catch(() => ({
+          success: false,
+        }));
 
       setUploadLoading(false);
 
       if (!result.success) {
+        history.push(ERROR_ROUTE);
         return;
       }
 
@@ -42,19 +45,6 @@ export const ParcelImage: React.FC = () => {
     },
     [setUploadLoading, apiUrl]
   );
-
-  const onImageChange = useCallback(() => {
-    if (!uploadRef.current || !uploadRef.current.files) {
-      return;
-    }
-
-    const [file] = uploadRef.current.files;
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    processImage(formData);
-  }, [uploadRef, processImage]);
 
   const takeImage = useCallback(() => {
     if (!webcamRef.current) {
@@ -95,7 +85,6 @@ export const ParcelImage: React.FC = () => {
 
           <StyledButtons>
             <button onClick={takeImage}>Foto aufnehmen</button>
-            <input type="file" ref={uploadRef} onChange={onImageChange} />
           </StyledButtons>
         </>
       )}

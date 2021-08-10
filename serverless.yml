@@ -80,15 +80,17 @@ functions:
           - dynamodb:UpdateItem
           - dynamodb:Query
           - dynamodb:Scan
+          - dynamodb:PutItem
         Resource: 
           - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
           - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}/index/*"
       - Effect: Allow
         Action:
-          - s3:PutObject
           - s3:DeleteObject
+          - s3:GetObject
+          - rekognition:DetectText
         Resource: 
-          - "arn:aws:s3:::${self:provider.environment.BUCKET_NAME}"
+          - "*"
       - Effect: Allow
         Action:
           - ses:SendEmail
@@ -96,9 +98,7 @@ functions:
           - ses:SendTemplatedEmail
         Resource:
           - "arn:aws:ses:${opt:region, self:provider.region}:*:identity/${self:provider.environment.SES_EMAIL}"
-
-
-
+          
   upload:
     handler: packages/upload-image/dist/index.handler
     events:
@@ -117,7 +117,7 @@ functions:
         Action:
           - s3:PutObject
         Resource: 
-          - "arn:aws:s3:::${self:provider.environment.BUCKET_NAME}"
+          - "*"
 
 resources:
   Resources:

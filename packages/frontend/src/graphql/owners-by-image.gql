@@ -3,5 +3,6 @@ query findOwnersByImage($filename: String!) {
     id
     firstname
     lastname
+    floor
   }
 }

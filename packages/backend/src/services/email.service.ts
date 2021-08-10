@@ -3,17 +3,17 @@ import { sesClient, sesEmail } from "../ses";
 
 const { IS_OFFLINE } = process.env;
 
-export const sendTokenEmail = async (user: User): Promise<void> => {
+export const sendTokenEmail = async (user: User): Promise<boolean> => {
   const message = `Hallo ${user.firstname}, hier ist dein Login Code: ${user.token}`;
 
   if (IS_OFFLINE) {
     console.log(message);
-    return;
+    return true;
   }
 
-  await sesClient
+  return sesClient
     .sendEmail({
-      Source: `whimp ${sesEmail}`,
+      Source: `Whimp <${sesEmail}>`,
       Destination: { ToAddresses: [user.email] },
       Message: {
         Subject: {
@@ -28,20 +28,28 @@ export const sendTokenEmail = async (user: User): Promise<void> => {
         },
       },
     })
-    .promise();
+    .promise()
+    .then(() => true)
+    .catch((e) => {
+      console.log("Error sending mail", e);
+      return false;
+    });
 };
 
-export const sendNotificationEmail = async (sender: User, receiver: User) => {
+export const sendNotificationEmail = async (
+  sender: User,
+  receiver: User
+): Promise<boolean> => {
   const message = `Hallo ${receiver.firstname}, Ein Paket für dich ist angekommen und wurde von ${sender.firstname} ${sender.lastname} (${sender.floor}. Stock) angenommen.`;
 
   if (IS_OFFLINE) {
     console.log(message);
-    return;
+    return true;
   }
 
-  await sesClient
+  return sesClient
     .sendEmail({
-      Source: `whimp ${sesEmail}`,
+      Source: `Whimp <${sesEmail}>`,
       Destination: { ToAddresses: [receiver.email] },
       Message: {
         Subject: {
@@ -56,5 +64,10 @@ export const sendNotificationEmail = async (sender: User, receiver: User) => {
         },
       },
     })
-    .promise();
+    .promise()
+    .then(() => true)
+    .catch((e) => {
+      console.log("Error sending mail", e);
+      return false;
+    });
 };

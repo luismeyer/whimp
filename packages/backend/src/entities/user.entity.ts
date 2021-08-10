@@ -28,8 +28,8 @@ export class User {
   @Field()
   lastname!: string;
 
-  @Field({ nullable: true })
-  floor?: number;
+  @Field()
+  floor!: number;
 
   token?: string;
 

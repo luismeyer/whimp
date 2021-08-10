@@ -36,11 +36,11 @@ export const SUCCESS_ROUTE = "/success";
 
 const GlobalStyle = createGlobalStyle`
   body {
-    margin: 0
+    margin: 0;
   }
 
   * {
-    margin: 0
+    margin: 0;
   }
 `;
 

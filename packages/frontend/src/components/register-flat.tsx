@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import styled from "styled-components";
 
 import { RegisterUserInput } from "../graphql/generated";
 
@@ -12,6 +14,10 @@ export type FlatInput = Pick<
   "postalCode" | "street" | "houseNumber" | "floor"
 >;
 
+const StyledForm = styled.form`
+  display: grid;
+`;
+
 export const RegisterFlat: React.FC<RegisterFlatProps> = ({ submit }) => {
   const {
     register,
@@ -19,33 +25,57 @@ export const RegisterFlat: React.FC<RegisterFlatProps> = ({ submit }) => {
     formState: { errors },
   } = useForm<FlatInput>();
 
+  useEffect(() => {
+    if (errors.postalCode?.message) {
+      toast.error(errors.postalCode.message, { id: "postalcode" });
+    }
+
+    if (errors.houseNumber?.message) {
+      toast.error(errors.houseNumber.message, { id: "housenumber" });
+    }
+
+    if (errors.street?.message) {
+      toast.error(errors.street.message, { id: "street" });
+    }
+
+    if (errors.floor?.message) {
+      toast.error(errors.floor.message, { id: "floor" });
+    }
+  }, [errors.postalCode, errors.houseNumber, errors.street, errors.floor]);
+
   return (
-    <form onSubmit={handleSubmit(submit)}>
+    <StyledForm onSubmit={handleSubmit(submit)}>
       <label>Postleitzahl</label>
       <input
         type="text"
         autoComplete="postal-code"
-        {...register("postalCode", { required: true })}
+        {...register("postalCode", {
+          required: "Bitte gib deine Postleitzahl an",
+        })}
       />
-      {errors.postalCode && <span>This field is required</span>}
 
       <label>Straße</label>
       <input
         type="text"
         autoComplete="street-address"
-        {...register("street", { required: true })}
+        {...register("street", { required: "Bitte gib deine Straße an" })}
       />
-      {errors.street && <span>This field is required</span>}
 
       <label>Hausnummber</label>
-      <input type="text" {...register("houseNumber", { required: true })} />
-      {errors.houseNumber && <span>This field is required</span>}
+      <input
+        type="text"
+        {...register("houseNumber", {
+          required: "Bitte gib deine Hausnummer an",
+        })}
+      />
 
       <label>Etage</label>
-      <input type="number" {...register("floor", { required: true })} />
-      {errors.floor && <span>This field is required</span>}
+      <input
+        type="number"
+        {...register("floor", { required: "Bitte gib deine Etage an" })}
+      />
 
       <input type="submit" value="Abschicken" />
-    </form>
+    </StyledForm>
   );
 };
