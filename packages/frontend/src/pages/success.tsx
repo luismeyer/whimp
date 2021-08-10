@@ -1,16 +1,26 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
 
 import { Gif } from "../components/gif";
+import { Page } from "../components/page";
+
+const StyledContainer = styled.div`
+  display: grid;
+  grid-gap: 8px;
+  justify-content: center;
+`;
 
 export const Success: React.FC = () => {
   return (
-    <div>
-      <h1>Super, eine Email wurde verschickt.</h1>
-      <span>
-        Du kannst diese Seite jetzt <Link to="/">schließen</Link>
-      </span>
-      <Gif name="Success" />
-    </div>
+    <Page>
+      <h1>Die Email wurde verschickt.</h1>
+      <StyledContainer>
+        <Gif name="Success" />
+        <span>
+          Du kannst diese Seite jetzt <Link to="/">schließen</Link>
+        </span>
+      </StyledContainer>
+    </Page>
   );
 };

@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 
-import { AuthenticatedContext, AuthState } from "../context/auth";
+import { Page } from "../components/page";
+import { Setup } from "../components/setup";
+import { useAuthContext } from "../context/auth";
 import { useCurrentUserQuery } from "../graphql/generated";
 import { Dashboard } from "./dashboard";
-import { Setup } from "../components/setup";
 
 export const LandingPage: React.FC = () => {
   const { data, loading, error } = useCurrentUserQuery();
 
-  const [authenticated, setAuthenticated] = useState<AuthState>("loading");
+  const { setAuthenticated, authenticated } = useAuthContext();
 
   useEffect(() => {
     if (error) {
@@ -29,12 +30,10 @@ export const LandingPage: React.FC = () => {
   }, [loading]);
 
   return (
-    <AuthenticatedContext.Provider value={{ authenticated, setAuthenticated }}>
-      <div>
-        {authenticated === "authenticated" && <Dashboard />}
-        {authenticated === "unauthenticated" && <Setup />}
-        {authenticated === "loading" && <span>loading...</span>}
-      </div>
-    </AuthenticatedContext.Provider>
+    <Page>
+      {authenticated === "authenticated" && <Dashboard />}
+      {authenticated === "unauthenticated" && <Setup />}
+      {authenticated === "loading" && <span>loading...</span>}
+    </Page>
   );
 };

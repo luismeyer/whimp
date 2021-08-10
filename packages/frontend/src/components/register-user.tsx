@@ -7,10 +7,7 @@ type RegisterUserProps = {
   submit: (data: UserInput) => void;
 };
 
-export type UserInput = Pick<
-  RegisterUserInput,
-  "email" | "firstname" | "lastname"
->;
+export type UserInput = Pick<RegisterUserInput, "firstname" | "lastname">;
 
 export const RegisterUser: React.FC<RegisterUserProps> = ({ submit }) => {
   const {
@@ -21,14 +18,6 @@ export const RegisterUser: React.FC<RegisterUserProps> = ({ submit }) => {
 
   return (
     <form onSubmit={handleSubmit(submit)}>
-      <label>Email</label>
-      <input
-        type="email"
-        autoComplete="email"
-        {...register("email", { required: true })}
-      />
-      {errors.email && <span>This field is required</span>}
-
       <label>Vorname</label>
       <input
         type="text"

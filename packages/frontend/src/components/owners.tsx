@@ -1,14 +1,29 @@
 import React, { useCallback, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
+import styled from "styled-components";
 
 import { ERROR_ROUTE, SUCCESS_ROUTE } from "../App";
 import { useAcceptParcelMutation, User } from "../graphql/generated";
-import { Gif } from "../components/gif";
+import { Gif } from "./gif";
 
 type OwnersProps = {
   users: User[];
   link: string;
 };
+
+const StyledGif = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+`;
+
+const StyledLink = styled(Link)`
+  position: absolute;
+  bottom: 16px;
+  color: white;
+  font-size: 26px;
+  font-weight: bold;
+`;
 
 export const Owners: React.FC<OwnersProps> = ({ users, link }) => {
   const history = useHistory();
@@ -37,20 +52,23 @@ export const Owners: React.FC<OwnersProps> = ({ users, link }) => {
 
   if (loading) {
     return (
-      <div>
+      <>
         <h1>Email wird geschrieben</h1>
         <Gif name="WriteEmail" />
-      </div>
+      </>
     );
   }
 
   return (
-    <div>
+    <>
       {users.length === 0 ? (
         <>
           <h1>Keine Nutzer gefunden</h1>
-          <Gif name="NotFound" />
-          <Link to={link}>Neuer Versuch</Link>
+
+          <StyledGif>
+            <Gif name="NotFound" />
+            <StyledLink to={link}>Neuer Versuch</StyledLink>
+          </StyledGif>
         </>
       ) : (
         <>
@@ -65,6 +83,6 @@ export const Owners: React.FC<OwnersProps> = ({ users, link }) => {
           ))}
         </>
       )}
-    </div>
+    </>
   );
 };

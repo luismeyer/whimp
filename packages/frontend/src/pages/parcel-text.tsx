@@ -1,14 +1,26 @@
-import React, { useCallback, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { useHistory } from 'react-router';
+import React, { useCallback, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { useHistory } from "react-router";
+import styled from "styled-components";
 
-import { OWNERS_TEXT_ROUTE } from '../App';
-import { Gif } from './gif';
+import { OWNERS_TEXT_ROUTE } from "../App";
+import { Page } from "../components/page";
 
 type FindOwnersForm = {
   firstname: string;
   lastname: string;
 };
+
+const StyledForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+`;
+
+const StyledSubmit = styled.input`
+  margin-top: 16px;
+`;
 
 export const ParcelText: React.FC = () => {
   const history = useHistory();
@@ -16,6 +28,7 @@ export const ParcelText: React.FC = () => {
   const {
     register,
     handleSubmit,
+
     formState: { errors, isValid },
   } = useForm<FindOwnersForm>();
 
@@ -32,21 +45,35 @@ export const ParcelText: React.FC = () => {
     [history]
   );
 
+  useEffect(() => {
+    if (errors.firstname?.message) {
+      toast.error(errors.firstname.message, { id: "firstname" });
+    }
+
+    if (errors.lastname?.message) {
+      toast.error(errors.lastname.message, { id: "lastname" });
+    }
+  }, [errors.firstname, errors.lastname]);
+
   return (
-    <div>
+    <Page>
       <h1>Gebe die Daten des Paket's ein</h1>
 
-      <form onSubmit={handleSubmit(submitForm)}>
+      <StyledForm onSubmit={handleSubmit(submitForm)}>
         <label>Vorname</label>
-        <input type="text" {...register("firstname", { required: true })} />
-        {errors.firstname && <span>Bitte Vornamen angeben</span>}
+        <input
+          type="text"
+          {...register("firstname", { required: "Bitte Vornamen angeben" })}
+        />
 
         <label>Nachname</label>
-        <input type="text" {...register("lastname", { required: true })} />
-        {errors.lastname && <span>Bitte Nachnamen angeben</span>}
+        <input
+          type="text"
+          {...register("lastname", { required: "Bitte Nachnamen angeben" })}
+        />
 
-        <input type="submit" />
-      </form>
-    </div>
+        <StyledSubmit type="submit" />
+      </StyledForm>
+    </Page>
   );
 };

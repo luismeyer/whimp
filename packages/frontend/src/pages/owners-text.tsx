@@ -2,10 +2,11 @@ import React from "react";
 import { Redirect } from "react-router-dom";
 
 import { TEXT_ROUTE } from "../App";
+import { Gif } from "../components/gif";
+import { Owners } from "../components/owners";
+import { Page } from "../components/page";
 import { useFindOwnersQuery } from "../graphql/generated";
 import { useURLSearchParams } from "../hooks/use-query-params";
-import { Gif } from "../components/gif";
-import { Owners } from "./owners";
 
 export const OwnersText: React.FC = () => {
   const query = useURLSearchParams();
@@ -23,12 +24,16 @@ export const OwnersText: React.FC = () => {
     },
   });
 
-  return loading || !data?.findOwners ? (
-    <div>
-      <h1>Paket Besitzer wird gesucht</h1>
-      <Gif name="Searching" />
-    </div>
-  ) : (
-    <Owners link={TEXT_ROUTE} users={data.findOwners} />
+  return (
+    <Page>
+      {loading || !data?.findOwners ? (
+        <>
+          <h1>Paket Besitzer wird gesucht</h1>
+          <Gif name="Searching" />
+        </>
+      ) : (
+        <Owners link={TEXT_ROUTE} users={data.findOwners} />
+      )}
+    </Page>
   );
 };

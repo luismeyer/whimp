@@ -80,7 +80,7 @@ export class UserResolver {
   @Mutation()
   @Authorized()
   logout(@Ctx() ctx: AuthorizedContext): boolean {
-    ctx.express.res.setHeader("Set-Cookie", "");
+    ctx.express.res.setHeader("Set-Cookie", `${authCookie}=""`);
 
     return true;
   }

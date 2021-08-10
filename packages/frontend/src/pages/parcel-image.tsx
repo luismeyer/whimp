@@ -1,10 +1,17 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import Webcam from "react-webcam";
+import styled from "styled-components";
 
 import { OWNERS_IMAGE_ROUTE } from "../App";
 import { Gif } from "../components/gif";
+import { Page } from "../components/page";
 import { apiUrl } from "../utils/const";
+
+const StyledButtons = styled.div`
+  display: grid;
+  grid-gap: 8px;
+`;
 
 export const ParcelImage: React.FC = () => {
   const uploadRef = useRef<HTMLInputElement>(null);
@@ -65,7 +72,7 @@ export const ParcelImage: React.FC = () => {
   }, [webcamRef, setImage, processImage]);
 
   return (
-    <div>
+    <Page>
       {uploadLoading ? (
         <>
           <h1>Bild wird hochgeladen</h1>
@@ -80,15 +87,18 @@ export const ParcelImage: React.FC = () => {
           ) : (
             <Webcam
               videoConstraints={{ facingMode: "environment" }}
+              width="100%"
               screenshotFormat="image/png"
               ref={webcamRef}
             />
           )}
 
-          <button onClick={takeImage}>Foto aufnemhmen</button>
-          <input type="file" ref={uploadRef} onChange={onImageChange} />
+          <StyledButtons>
+            <button onClick={takeImage}>Foto aufnehmen</button>
+            <input type="file" ref={uploadRef} onChange={onImageChange} />
+          </StyledButtons>
         </>
       )}
-    </div>
+    </Page>
   );
 };

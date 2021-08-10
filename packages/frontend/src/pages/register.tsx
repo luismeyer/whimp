@@ -5,6 +5,7 @@ import { ERROR_ROUTE, LOGIN_ROUTE } from "../App";
 import { FlatInput, RegisterFlat } from "../components/register-flat";
 import { RegisterUser, UserInput } from "../components/register-user";
 import { useRegisterUserMutation } from "../graphql/generated";
+import { useURLSearchParams } from "../hooks/use-query-params";
 
 type Step = "userData" | "flat";
 
@@ -23,8 +24,11 @@ export const Register: React.FC<RegisterProps> = ({ submit }) => {
 
   const history = useHistory();
 
+  const query = useURLSearchParams();
+  const email = query.get("email");
+
   useEffect(() => {
-    if (!userInput || !flatInput) {
+    if (!userInput || !flatInput || !email) {
       return;
     }
 
@@ -33,6 +37,7 @@ export const Register: React.FC<RegisterProps> = ({ submit }) => {
         data: {
           ...userInput,
           ...flatInput,
+          email,
           floor: Number(flatInput.floor),
         },
       },
@@ -55,6 +60,10 @@ export const Register: React.FC<RegisterProps> = ({ submit }) => {
   const completeRegisterFlat = useCallback((input: FlatInput) => {
     setFlatInput(input);
   }, []);
+
+  if (!email) {
+    history.push("/");
+  }
 
   return (
     <div>
