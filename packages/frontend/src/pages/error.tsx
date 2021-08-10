@@ -1,7 +1,7 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
-import { Gif } from './gif';
+import { Gif } from "../components/gif";
 
 export const Error: React.FC = () => {
   return (

@@ -9,15 +9,15 @@ import {
 import { ApolloProvider } from "@apollo/client";
 
 import { apolloClient } from "./apollo-client";
-import { Error } from "./components/error";
-import { Login } from "./components/login";
-import { OwnersImage } from "./components/owners-image";
-import { OwnersText } from "./components/owners-text";
-import { LandingPage } from "./components/page";
-import { ParcelImage } from "./components/parcel-image";
-import { ParcelText } from "./components/parcel-text";
-import { Register } from "./components/register";
-import { Success } from "./components/success";
+import { Error } from "./pages/error";
+import { OwnersImage } from "./pages/owners-image";
+import { ParcelImage } from "./pages/parcel-image";
+import { ParcelText } from "./pages/parcel-text";
+import { Register } from "./pages/register";
+import { Success } from "./pages/success";
+import { LandingPage } from "./pages/landing";
+import { Login } from "./pages/login";
+import { OwnersText } from "./pages/owners-text";
 
 export const LOGIN_ROUTE = "/login";
 export const REGISTER_ROUTE = "/register";

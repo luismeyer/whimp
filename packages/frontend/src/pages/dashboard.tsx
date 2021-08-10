@@ -1,9 +1,16 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
 
 import { IMAGE_ROUTE, TEXT_ROUTE } from "../App";
 import { useAuthContext } from "../context/auth";
 import { useCurrentUserQuery, useLogoutMutation } from "../graphql/generated";
+
+const StyledLinkContainer = styled.div`
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr 1fr;
+`;
 
 export const Dashboard: React.FC = () => {
   const { authenticated, setAuthenticated } = useAuthContext();
@@ -33,9 +40,10 @@ export const Dashboard: React.FC = () => {
     <div>
       <h1>Hallo {data.currentUser.firstname}</h1>
 
-      <Link to={IMAGE_ROUTE}>Paket einscannen</Link>
-
-      <Link to={TEXT_ROUTE}>Paket-Daten eingeben</Link>
+      <StyledLinkContainer>
+        <Link to={IMAGE_ROUTE}>Paket einscannen</Link>
+        <Link to={TEXT_ROUTE}>Paket-Daten eingeben</Link>
+      </StyledLinkContainer>
 
       <button onClick={() => logoutMutation()}>Logout</button>
     </div>

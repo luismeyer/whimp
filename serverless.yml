@@ -14,6 +14,7 @@ provider:
     ADRESS_GSI: adressGSI
     BUCKET_NAME: ${self:service}-${self:custom.stage}-image-bucket
     STAGE: ${self:custom.stage}
+    SES_EMAIL: ${file(.env.json):SES_EMAIL}
   apiGateway:
     binaryMediaTypes:
       - '*/*'
@@ -88,6 +89,15 @@ functions:
           - s3:DeleteObject
         Resource: 
           - "arn:aws:s3:::${self:provider.environment.BUCKET_NAME}"
+      - Effect: Allow
+        Action:
+          - ses:SendEmail
+          - ses:SendRawEmail
+          - ses:SendTemplatedEmail
+        Resource:
+          - "arn:aws:ses:${opt:region, self:provider.region}:*:identity/${self:provider.environment.SES_EMAIL}"
+
+
 
   upload:
     handler: packages/upload-image/dist/index.handler

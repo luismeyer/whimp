@@ -1,11 +1,8 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from "vite";
 
-import reactRefresh from '@vitejs/plugin-react-refresh';
+import reactRefresh from "@vitejs/plugin-react-refresh";
 
-import EnvVariables from '../../.env.json';
-
-const { API_URL: API_URL_FROM_FILE } = EnvVariables;
-const { API_URL: API_URL_FROM_ENV } = process.env;
+const { STAGE } = process.env;
 
 export default defineConfig({
   server: {
@@ -16,7 +13,7 @@ export default defineConfig({
   },
   define: {
     ENVIRONMENT: {
-      apiUrl: API_URL_FROM_ENV ?? API_URL_FROM_FILE,
+      stage: STAGE ?? "dev",
     },
   },
   plugins: [reactRefresh()],

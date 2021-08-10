@@ -3,9 +3,8 @@ import { useHistory } from "react-router";
 import Webcam from "react-webcam";
 
 import { OWNERS_IMAGE_ROUTE } from "../App";
-import { useFindOwnersByImageLazyQuery } from "../graphql/generated";
+import { Gif } from "../components/gif";
 import { apiUrl } from "../utils/const";
-import { Gif } from "./gif";
 
 export const ParcelImage: React.FC = () => {
   const uploadRef = useRef<HTMLInputElement>(null);

@@ -1,10 +1,10 @@
-import React, { useCallback, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useHistory } from 'react-router';
+import React, { useCallback, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useHistory } from "react-router";
 
-import { LOGIN_ROUTE, REGISTER_ROUTE } from '../App';
-import { useAuthContext } from '../context/auth';
-import { useTriggerLoginMutation } from '../graphql/generated';
+import { LOGIN_ROUTE, REGISTER_ROUTE } from "../App";
+import { useAuthContext } from "../context/auth";
+import { useTriggerLoginMutation } from "../graphql/generated";
 
 type Step = "email" | "login" | "register";
 
@@ -48,6 +48,7 @@ export const Setup: React.FC = () => {
   return (
     <div>
       <h1>Setup</h1>
+
       {step === "email" && (
         <>
           <form onSubmit={handleSubmit(triggerLogin)}>

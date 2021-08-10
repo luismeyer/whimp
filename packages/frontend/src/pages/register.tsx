@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router";
-import { ERROR_ROUTE, LOGIN_ROUTE } from "../App";
 
+import { ERROR_ROUTE, LOGIN_ROUTE } from "../App";
+import { FlatInput, RegisterFlat } from "../components/register-flat";
+import { RegisterUser, UserInput } from "../components/register-user";
 import { useRegisterUserMutation } from "../graphql/generated";
-import { FlatInput, RegisterFlat } from "./register-flat";
-import { RegisterUser, UserInput } from "./register-user";
 
 type Step = "userData" | "flat";
 
