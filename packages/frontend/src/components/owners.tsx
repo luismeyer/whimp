@@ -1,13 +1,13 @@
-import React, { useCallback, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useCallback, useEffect, useState } from "react";
+import { useHistory } from "react-router";
 import styled from "styled-components";
+import { SUCCESS_ROUTE, ERROR_ROUTE } from "../App";
 
-import { ERROR_ROUTE, SUCCESS_ROUTE } from "../App";
 import { useAcceptParcelMutation, User } from "../graphql/generated";
-import { StyledButton } from "./button";
 import { Gif } from "./gif";
 import { StyledHeadline } from "./headline";
 import { StyledLink } from "./link";
+import { Owner } from "./onwer";
 
 type OwnersProps = {
   users: User[];
@@ -18,10 +18,6 @@ const StyledGif = styled.div`
   display: grid;
   grid-gap: 8px;
   justify-content: center;
-`;
-
-const StyledOwnerButton = styled(StyledButton)`
-  margin-bottom: 24px;
 `;
 
 export const Owners: React.FC<OwnersProps> = ({ users, link }) => {
@@ -72,16 +68,13 @@ export const Owners: React.FC<OwnersProps> = ({ users, link }) => {
       ) : (
         <>
           <StyledHeadline.h1>Gefundene Nutzer:</StyledHeadline.h1>
-          {users.map((user) => (
-            <StyledOwnerButton
+          {users.map((user, index) => (
+            <Owner
+              isFirst={index === 0}
               key={user.id}
-              onClick={() => selectOwner(user.id)}
-            >
-              <span>
-                {user.firstname} {user.lastname}
-              </span>
-              <span> | Etage: {user.floor}</span>
-            </StyledOwnerButton>
+              user={user}
+              submitLoading={selectOwner}
+            />
           ))}
         </>
       )}

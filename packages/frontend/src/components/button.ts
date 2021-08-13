@@ -9,9 +9,10 @@ const primaryButtonBase = css`
   border: none;
   color: white;
   border-radius: 4px;
-  padding: 8px;
+  padding: 8px 16px;
   box-shadow: 0 2px 15px rgba(255, 0, 130, 0.5);
   cursor: pointer;
+  border: 2px solid ${Color.main};
 `;
 
 const secondaryButtonBase = css`
@@ -20,7 +21,7 @@ const secondaryButtonBase = css`
   border: 2px solid ${Color.main};
   color: ${Color.main};
   border-radius: 4px;
-  padding: 8px;
+  padding: 8px 16px;
   cursor: pointer;
 `;
 

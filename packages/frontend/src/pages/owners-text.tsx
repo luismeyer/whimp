@@ -19,7 +19,7 @@ export const OwnersText: React.FC = () => {
   const firstname = query.get("firstname");
   const lastname = query.get("lastname");
 
-  if (!firstname || !lastname || authenticated !== "authenticated") {
+  if (!firstname || !lastname || authenticated === "unauthenticated") {
     return <Redirect to="/" />;
   }
 

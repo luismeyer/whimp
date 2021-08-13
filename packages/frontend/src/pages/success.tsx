@@ -1,15 +1,15 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { Gif } from "../components/gif";
 import { StyledHeadline } from "../components/headline";
+import { StyledLink } from "../components/link";
 import { Page } from "../components/page";
 
 const StyledContainer = styled.div`
   display: grid;
   grid-gap: 8px;
-  justify-content: center;
+  justify-items: center;
 `;
 
 export const Success: React.FC = () => {
@@ -19,7 +19,7 @@ export const Success: React.FC = () => {
 
       <StyledContainer>
         <span>
-          Du kannst diese Seite jetzt <Link to="/">schließen</Link>
+          Du kannst diese Seite jetzt <StyledLink to="/">schließen</StyledLink>
         </span>
         <Gif name="Success" />
       </StyledContainer>
