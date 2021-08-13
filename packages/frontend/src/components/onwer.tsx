@@ -19,7 +19,7 @@ const StyledOwnerButton = styled(StyledButton)`
 const StyledButtonContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-gap: 24px;
+  grid-gap: 18px;
   margin-top: 24px;
 `;
 

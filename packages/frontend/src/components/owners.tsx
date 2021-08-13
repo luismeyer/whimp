@@ -20,6 +20,10 @@ const StyledGif = styled.div`
   justify-content: center;
 `;
 
+const StyledHeadlineSection = styled.div`
+  margin-bottom: 24px;
+`;
+
 export const Owners: React.FC<OwnersProps> = ({ users, link }) => {
   const history = useHistory();
 
@@ -67,7 +71,10 @@ export const Owners: React.FC<OwnersProps> = ({ users, link }) => {
         </>
       ) : (
         <>
-          <StyledHeadline.h1>Gefundene Nutzer:</StyledHeadline.h1>
+          <StyledHeadlineSection>
+            <StyledHeadline.h1 noMargin>Gefundene Nachbarn:</StyledHeadline.h1>
+            <StyledLink to={link}>Neuer Versuch</StyledLink>
+          </StyledHeadlineSection>
           {users.map((user, index) => (
             <Owner
               isFirst={index === 0}
