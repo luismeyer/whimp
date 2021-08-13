@@ -7,6 +7,8 @@ import styled from "styled-components";
 import { ERROR_ROUTE, LOGIN_ROUTE, REGISTER_ROUTE } from "../App";
 import { useAuthContext } from "../context/auth";
 import { useTriggerLoginMutation } from "../graphql/generated";
+import { StyledButton } from "./button";
+import { StyledHeadline } from "./headline";
 
 type FormData = {
   email: string;
@@ -82,7 +84,7 @@ export const Setup: React.FC = () => {
 
   return (
     <>
-      <h1>Willkommen</h1>
+      <StyledHeadline.h1>Willkommen</StyledHeadline.h1>
 
       <StyledSetupForm onSubmit={handleSubmit(triggerLogin)}>
         <label>Bitte gib deine Email an:</label>
@@ -95,12 +97,15 @@ export const Setup: React.FC = () => {
       </StyledSetupForm>
 
       <StyledSetupButtons>
-        <button disabled={loading} onClick={handleSubmit(triggerLogin)}>
+        <StyledButton disabled={loading} onClick={handleSubmit(triggerLogin)}>
           einloggen
-        </button>
-        <button disabled={loading} onClick={handleSubmit(triggerRegister)}>
+        </StyledButton>
+        <StyledButton
+          disabled={loading}
+          onClick={handleSubmit(triggerRegister)}
+        >
           registrieren
-        </button>
+        </StyledButton>
       </StyledSetupButtons>
     </>
   );

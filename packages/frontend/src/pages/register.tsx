@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Redirect, useHistory } from "react-router";
 
 import { ERROR_ROUTE, LOGIN_ROUTE } from "../App";
+import { Loader } from "../components/loader";
+import { StyledHeadline } from "../components/headline";
 import { Page } from "../components/page";
 import { FlatInput, RegisterFlat } from "../components/register-flat";
 import { RegisterUser, UserInput } from "../components/register-user";
@@ -68,9 +70,9 @@ export const Register: React.FC<RegisterProps> = ({ submit }) => {
 
   return (
     <Page>
-      <h1>Bitte gebe deine Daten an</h1>
+      <StyledHeadline.h1>Bitte gebe deine Daten an</StyledHeadline.h1>
 
-      {loading && <span>loading...</span>}
+      {loading && <Loader />}
 
       {!loading && step === "userData" && (
         <RegisterUser submit={completeRegisterUser} />

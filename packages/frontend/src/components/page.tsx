@@ -13,7 +13,7 @@ const StyledPage = styled.div`
 
 const StyledChildren = styled.div`
   width: 100%;
-  padding: 0 16px 128px 16px;
+  padding: 0 16px 0px 16px;
 `;
 
 export const Page: React.FC = ({ children }) => {

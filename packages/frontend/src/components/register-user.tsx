@@ -1,19 +1,16 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import styled from "styled-components";
 
 import { RegisterUserInput } from "../graphql/generated";
+import { StyledButton } from "./button";
+import { StyledForm, StyledFormContainer } from "./form";
 
 type RegisterUserProps = {
   submit: (data: UserInput) => void;
 };
 
 export type UserInput = Pick<RegisterUserInput, "firstname" | "lastname">;
-
-const StyledForm = styled.form`
-  display: grid;
-`;
 
 export const RegisterUser: React.FC<RegisterUserProps> = ({ submit }) => {
   const {
@@ -34,21 +31,29 @@ export const RegisterUser: React.FC<RegisterUserProps> = ({ submit }) => {
 
   return (
     <StyledForm onSubmit={handleSubmit(submit)}>
-      <label>Vorname</label>
-      <input
-        type="text"
-        autoComplete="given-name"
-        {...register("firstname", { required: "Bitte gib deinen Vornamen an" })}
-      />
+      <StyledFormContainer>
+        <label>Vorname</label>
+        <input
+          type="text"
+          autoComplete="given-name"
+          {...register("firstname", {
+            required: "Bitte gib deinen Vornamen an",
+          })}
+        />
+      </StyledFormContainer>
 
-      <label>Nachname</label>
-      <input
-        type="text"
-        autoComplete="family-name"
-        {...register("lastname", { required: "Bitte gib deinen Nachnamen an" })}
-      />
+      <StyledFormContainer>
+        <label>Nachname</label>
+        <input
+          type="text"
+          autoComplete="family-name"
+          {...register("lastname", {
+            required: "Bitte gib deinen Nachnamen an",
+          })}
+        />
+      </StyledFormContainer>
 
-      <input type="submit" value="Abschicken" />
+      <StyledButton onClick={handleSubmit(submit)}>Bestätigen</StyledButton>
     </StyledForm>
   );
 };

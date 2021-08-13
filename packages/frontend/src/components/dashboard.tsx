@@ -1,10 +1,13 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { IMAGE_ROUTE, TEXT_ROUTE } from "../App";
 import { useAuthContext } from "../context/auth";
 import { useCurrentUserQuery, useLogoutMutation } from "../graphql/generated";
+import { Loader } from "./loader";
+import { StyledButton } from "./button";
+import { StyledHeadline } from "./headline";
+import { StyledLink } from "./link";
 
 const StyledLinkContainer = styled.div`
   display: grid;
@@ -13,14 +16,12 @@ const StyledLinkContainer = styled.div`
 `;
 
 const StyledHeader = styled.div`
-  display: flex;
+  display: grid;
   justify-content: center;
-  margin-bottom: 16px;
   align-items: center;
-`;
-
-const StyledHeadline = styled.h1`
-  margin-right: 16px;
+  grid-template-columns: auto auto;
+  grid-gap: 16px;
+  margin-bottom: 24px;
 `;
 
 export const Dashboard: React.FC = () => {
@@ -44,7 +45,7 @@ export const Dashboard: React.FC = () => {
   }, [logoutLoading, logoutData]);
 
   if (authenticated === "loading" || loading || logoutLoading) {
-    return <span>loading...</span>;
+    return <Loader />;
   }
 
   if (authenticated == "unauthenticated" || !data) {
@@ -54,13 +55,17 @@ export const Dashboard: React.FC = () => {
   return (
     <>
       <StyledHeader>
-        <StyledHeadline>Hallo {data.currentUser.firstname}</StyledHeadline>
-        <button onClick={() => logoutMutation()}>Logout</button>
+        <StyledHeadline.h1 noMargin>
+          Hallo {data.currentUser.firstname}
+        </StyledHeadline.h1>
+        <StyledButton secondary onClick={() => logoutMutation()}>
+          Logout
+        </StyledButton>
       </StyledHeader>
 
       <StyledLinkContainer>
-        <Link to={IMAGE_ROUTE}>Paket einscannen</Link>
-        <Link to={TEXT_ROUTE}>Paket-Daten eingeben</Link>
+        <StyledLink to={IMAGE_ROUTE}>Paket einscannen</StyledLink>
+        <StyledLink to={TEXT_ROUTE}>Paket-Daten eingeben</StyledLink>
       </StyledLinkContainer>
     </>
   );

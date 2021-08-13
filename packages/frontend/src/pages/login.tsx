@@ -4,6 +4,8 @@ import toast from "react-hot-toast";
 import { useHistory } from "react-router";
 import styled from "styled-components";
 
+import { StyledButton } from "../components/button";
+import { StyledHeadline } from "../components/headline";
 import { Page } from "../components/page";
 import { useAuthContext } from "../context/auth";
 import { useLoginMutation } from "../graphql/generated";
@@ -14,7 +16,7 @@ const StyledLoginForm = styled.form`
   flex-direction: column;
 `;
 
-const StyledLoginSubmit = styled.input`
+const StyledLoginSubmit = styled(StyledButton)`
   margin-top: 16px;
 `;
 
@@ -59,7 +61,7 @@ export const Login: React.FC = () => {
 
   return (
     <Page>
-      <h1>Verifiziere dich</h1>
+      <StyledHeadline.h1>Verifiziere dich</StyledHeadline.h1>
 
       <StyledLoginForm onSubmit={handleSubmit(login)}>
         <label>
@@ -71,7 +73,9 @@ export const Login: React.FC = () => {
           {...register("token", { required: "Bitte gebe deinen Code an" })}
         />
 
-        <StyledLoginSubmit type="submit" value="Einloggen" disabled={loading} />
+        <StyledLoginSubmit onClick={handleSubmit(login)} disabled={loading}>
+          Einloggen
+        </StyledLoginSubmit>
       </StyledLoginForm>
     </Page>
   );

@@ -8,6 +8,7 @@ import { useAuthContext } from "../context/auth";
 import { useFindOwnersByImageQuery } from "../graphql/generated";
 import { useURLSearchParams } from "../hooks/use-query-params";
 import { Owners } from "../components/owners";
+import { StyledHeadline } from "../components/headline";
 
 export const OwnersImage: React.FC = () => {
   const query = useURLSearchParams();
@@ -34,7 +35,7 @@ export const OwnersImage: React.FC = () => {
     <Page>
       {loading || !data?.findOwnersByImage ? (
         <>
-          <h1>Paket Besitzer wird gesucht</h1>
+          <StyledHeadline.h1>Paket Besitzer wird gesucht</StyledHeadline.h1>
           <Gif name="Searching" />
         </>
       ) : (

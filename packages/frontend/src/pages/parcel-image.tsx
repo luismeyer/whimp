@@ -1,11 +1,14 @@
 import React, { useCallback, useState } from "react";
 import { useHistory } from "react-router";
-import Webcam from "react-webcam";
+import DefaultWebcam from "react-webcam";
 import styled from "styled-components";
 
 import { ERROR_ROUTE, OWNERS_IMAGE_ROUTE } from "../App";
+import { StyledButton } from "../components/button";
 import { Gif } from "../components/gif";
+import { StyledHeadline } from "../components/headline";
 import { Page } from "../components/page";
+import { Webcam } from "../components/webcam";
 import { apiUrl } from "../utils/const";
 
 const StyledButtons = styled.div`
@@ -14,7 +17,7 @@ const StyledButtons = styled.div`
 `;
 
 export const ParcelImage: React.FC = () => {
-  const webcamRef = React.useRef<Webcam>(null);
+  const webcamRef = React.useRef<DefaultWebcam>(null);
   const [image, setImage] = useState("");
 
   const [uploadLoading, setUploadLoading] = useState(false);
@@ -65,26 +68,17 @@ export const ParcelImage: React.FC = () => {
     <Page>
       {uploadLoading ? (
         <>
-          <h1>Bild wird hochgeladen</h1>
+          <StyledHeadline.h1>Bild wird hochgeladen</StyledHeadline.h1>
           <Gif name="Loading" />
         </>
       ) : (
         <>
-          <h1>Mache ein Bild des Paket's</h1>
+          <StyledHeadline.h1>Mache ein Bild des Pakets</StyledHeadline.h1>
 
-          {image ? (
-            <img src={image} />
-          ) : (
-            <Webcam
-              videoConstraints={{ facingMode: "environment" }}
-              width="100%"
-              screenshotFormat="image/png"
-              ref={webcamRef}
-            />
-          )}
+          {image ? <img src={image} /> : <Webcam ref={webcamRef} />}
 
           <StyledButtons>
-            <button onClick={takeImage}>Foto aufnehmen</button>
+            <StyledButton onClick={takeImage}>Foto aufnehmen</StyledButton>
           </StyledButtons>
         </>
       )}

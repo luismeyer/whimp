@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
+import { Dashboard } from "../components/dashboard";
+import { Loader } from "../components/loader";
 import { Page } from "../components/page";
 import { Setup } from "../components/setup";
 import { useAuthContext } from "../context/auth";
 import { useCurrentUserQuery } from "../graphql/generated";
-import { Dashboard } from "../components/dashboard";
 
 export const LandingPage: React.FC = () => {
   const { data, loading, error } = useCurrentUserQuery();
@@ -33,7 +34,7 @@ export const LandingPage: React.FC = () => {
     <Page>
       {authenticated === "authenticated" && <Dashboard />}
       {authenticated === "unauthenticated" && <Setup />}
-      {authenticated === "loading" && <span>loading...</span>}
+      {authenticated === "loading" && <Loader />}
     </Page>
   );
 };

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { Gif } from "../components/gif";
+import { StyledHeadline } from "../components/headline";
 import { Page } from "../components/page";
 
 const StyledContainer = styled.div`
@@ -14,7 +15,7 @@ const StyledContainer = styled.div`
 export const Error: React.FC = () => {
   return (
     <Page>
-      <h1>Etwas ist schiefgegangen</h1>
+      <StyledHeadline.h1>Etwas ist schiefgegangen</StyledHeadline.h1>
 
       <StyledContainer>
         <Link to="/">Zurück zur Übersicht</Link>

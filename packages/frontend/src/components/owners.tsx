@@ -1,10 +1,13 @@
 import React, { useCallback, useEffect } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 
 import { ERROR_ROUTE, SUCCESS_ROUTE } from "../App";
 import { useAcceptParcelMutation, User } from "../graphql/generated";
+import { StyledButton } from "./button";
 import { Gif } from "./gif";
+import { StyledHeadline } from "./headline";
+import { StyledLink } from "./link";
 
 type OwnersProps = {
   users: User[];
@@ -15,6 +18,10 @@ const StyledGif = styled.div`
   display: grid;
   grid-gap: 8px;
   justify-content: center;
+`;
+
+const StyledOwnerButton = styled(StyledButton)`
+  margin-bottom: 24px;
 `;
 
 export const Owners: React.FC<OwnersProps> = ({ users, link }) => {
@@ -45,7 +52,7 @@ export const Owners: React.FC<OwnersProps> = ({ users, link }) => {
   if (loading) {
     return (
       <>
-        <h1>Email wird geschrieben</h1>
+        <StyledHeadline.h1>Email wird geschrieben</StyledHeadline.h1>
         <Gif name="WriteEmail" />
       </>
     );
@@ -55,23 +62,26 @@ export const Owners: React.FC<OwnersProps> = ({ users, link }) => {
     <>
       {users.length === 0 ? (
         <>
-          <h1>Keine Nutzer gefunden</h1>
+          <StyledHeadline.h1>Keine Nutzer gefunden</StyledHeadline.h1>
 
           <StyledGif>
-            <Link to={link}>Neuer Versuch</Link>
+            <StyledLink to={link}>Neuer Versuch</StyledLink>
             <Gif name="NotFound" />
           </StyledGif>
         </>
       ) : (
         <>
-          <h1>Gefundene Nutzer:</h1>
+          <StyledHeadline.h1>Gefundene Nutzer:</StyledHeadline.h1>
           {users.map((user) => (
-            <button onClick={() => selectOwner(user.id)}>
+            <StyledOwnerButton
+              key={user.id}
+              onClick={() => selectOwner(user.id)}
+            >
               <span>
                 {user.firstname} {user.lastname}
               </span>
               <span> | Etage: {user.floor}</span>
-            </button>
+            </StyledOwnerButton>
           ))}
         </>
       )}

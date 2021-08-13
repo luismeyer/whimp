@@ -46,5 +46,17 @@
     "houseNumber": "14",
     "postalCode": "20255",
     "floor": 0
+  },
+  {
+    "id": "bliblablu",
+    "firstname": "Anja",
+    "lastname": "Monzel",
+    "email": "anja@menzel.org",
+    "type": "User",
+    "token": "ew",
+    "street": "Prätoriusweg",
+    "houseNumber": "14",
+    "postalCode": "20255",
+    "floor": 2
   }
 ]
