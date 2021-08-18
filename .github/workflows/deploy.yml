@@ -35,6 +35,8 @@ jobs:
       run: yarn build
 
     - name: Deploy Backend
+      env:
+        SES_EMAIL: ${{ secrets.SES_EMAIL }}
       run: sls deploy --stage prod
 
     - name: Deploy Frontend
