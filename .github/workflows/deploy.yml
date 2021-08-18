@@ -39,4 +39,4 @@ jobs:
       run: sls deploy --stage prod
 
     - name: Deploy Frontend
-      run: sls client deploy --stage prod
+      run: sls client deploy --stage prod --no-confirm
