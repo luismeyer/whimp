@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { OWNERS_TEXT_ROUTE } from "../App";
 import { StyledButton } from "../components/button";
 import { StyledHeadline } from "../components/headline";
+import { StyledLink } from "../components/link";
 import { Page } from "../components/page";
 
 type FindOwnersForm = {
@@ -18,6 +19,7 @@ const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
   text-align: left;
+  margin-top: 12px;
 `;
 
 const StyledSubmit = styled(StyledButton)`
@@ -60,6 +62,7 @@ export const ParcelText: React.FC = () => {
   return (
     <Page>
       <StyledHeadline.h1>Gebe die Daten des Paket's ein</StyledHeadline.h1>
+      <StyledLink to="/">Zum Dashboard</StyledLink>
 
       <StyledForm onSubmit={handleSubmit(submitForm)}>
         <label>Vorname</label>
@@ -73,7 +76,6 @@ export const ParcelText: React.FC = () => {
           type="text"
           {...register("lastname", { required: "Bitte Nachnamen angeben" })}
         />
-
         <StyledSubmit onClick={handleSubmit(submitForm)}>Weiter</StyledSubmit>
       </StyledForm>
     </Page>

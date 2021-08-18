@@ -17,7 +17,7 @@ export const OwnersImage: React.FC = () => {
 
   const filename = query.get("filename");
 
-  if (!filename || authenticated !== "authenticated") {
+  if (!filename || authenticated === "unauthenticated") {
     return <Redirect to="/" />;
   }
 

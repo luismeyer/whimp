@@ -26,5 +26,5 @@ export const detectText = async (
 
   return TextDetections.filter((detection) => detection.Type === "WORD")
     .map((detection) => detection.DetectedText ?? "")
-    .join(" ");
+    .join("|");
 };

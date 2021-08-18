@@ -7,13 +7,14 @@ import { ERROR_ROUTE, OWNERS_IMAGE_ROUTE } from "../App";
 import { StyledButton } from "../components/button";
 import { Gif } from "../components/gif";
 import { StyledHeadline } from "../components/headline";
+import { StyledLink } from "../components/link";
 import { Page } from "../components/page";
 import { Webcam } from "../components/webcam";
 import { apiUrl } from "../utils/const";
 
-const StyledButtons = styled.div`
+const StyledGrid = styled.div`
   display: grid;
-  grid-gap: 8px;
+  grid-gap: 12px;
 `;
 
 export const ParcelImage: React.FC = () => {
@@ -72,15 +73,16 @@ export const ParcelImage: React.FC = () => {
           <Gif name="Loading" />
         </>
       ) : (
-        <>
-          <StyledHeadline.h1>Mache ein Bild des Pakets</StyledHeadline.h1>
+        <StyledGrid>
+          <StyledHeadline.h1 noMargin>
+            Mache ein Bild des Pakets
+          </StyledHeadline.h1>
+          <StyledLink to="/">Zum Dashboard</StyledLink>
 
           {image ? <img src={image} /> : <Webcam ref={webcamRef} />}
 
-          <StyledButtons>
-            <StyledButton onClick={takeImage}>Foto aufnehmen</StyledButton>
-          </StyledButtons>
-        </>
+          <StyledButton onClick={takeImage}>Foto aufnehmen</StyledButton>
+        </StyledGrid>
       )}
     </Page>
   );

@@ -12,7 +12,6 @@ export const Webcam = React.forwardRef<DefaultWebcam, {}>((_, ref) => {
         width: "calc(100% - 20px)",
         maxHeight: "300px",
         borderRadius: "4px",
-        margin: "12px 0",
       }}
       audio={false}
       screenshotFormat="image/png"
