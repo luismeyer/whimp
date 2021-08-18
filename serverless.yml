@@ -14,7 +14,7 @@ provider:
     ADRESS_GSI: adressGSI
     BUCKET_NAME: ${self:service}-${self:custom.stage}-image-bucket
     STAGE: ${self:custom.stage}
-    SES_EMAIL: ${file(.env.json):SES_EMAIL}
+    SES_EMAIL: ${env:SES_EMAIL, file(.env.json):SES_EMAIL}
   apiGateway:
     binaryMediaTypes:
       - '*/*'
