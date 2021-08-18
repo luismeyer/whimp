@@ -10,7 +10,8 @@
     "experimentalDecorators": true,
     "strict": true,
     "strictNullChecks": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "jsx": "react"
   },
   "exclude": ["node_modules", "dist"],
   "include": ["src/**/*"]

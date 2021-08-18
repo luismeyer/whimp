@@ -1,29 +1,30 @@
 import { User } from "../entities/user.entity";
 import { sesClient, sesEmail } from "../ses";
+import {
+  renderLoginCodeTemplate,
+  renderNotificationTemplate,
+} from "./react.service";
 
 const { IS_OFFLINE } = process.env;
 
-export const sendTokenEmail = async (user: User): Promise<boolean> => {
-  const message = `Hallo ${user.firstname}, hier ist dein Login Code: ${user.token}`;
-
-  if (IS_OFFLINE) {
-    console.log(message);
-    return true;
-  }
-
+const sendEmail = async (
+  destinationEmail: string,
+  subject: string,
+  html: string
+) => {
   return sesClient
     .sendEmail({
       Source: `Whimp <${sesEmail}>`,
-      Destination: { ToAddresses: [user.email] },
+      Destination: { ToAddresses: [destinationEmail] },
       Message: {
         Subject: {
           Charset: "UTF-8",
-          Data: "Dein Login Code",
+          Data: subject,
         },
         Body: {
-          Text: {
+          Html: {
+            Data: html,
             Charset: "UTF-8",
-            Data: message,
           },
         },
       },
@@ -36,38 +37,31 @@ export const sendTokenEmail = async (user: User): Promise<boolean> => {
     });
 };
 
-export const sendNotificationEmail = async (
-  sender: User,
-  receiver: User
-): Promise<boolean> => {
-  const message = `Hallo ${receiver.firstname}, Ein Paket für dich ist angekommen und wurde von ${sender.firstname} ${sender.lastname} (${sender.floor}. Stock) angenommen.`;
+export const sendTokenEmail = async (user: User): Promise<boolean> => {
+  if (!user.token) {
+    return false;
+  }
+
+  const template = renderLoginCodeTemplate(user.firstname, user.token);
 
   if (IS_OFFLINE) {
-    console.log(message);
+    console.log(template);
     return true;
   }
 
-  return sesClient
-    .sendEmail({
-      Source: `Whimp <${sesEmail}>`,
-      Destination: { ToAddresses: [receiver.email] },
-      Message: {
-        Subject: {
-          Charset: "UTF-8",
-          Data: "Dein Paket ist da",
-        },
-        Body: {
-          Text: {
-            Charset: "UTF-8",
-            Data: message,
-          },
-        },
-      },
-    })
-    .promise()
-    .then(() => true)
-    .catch((e) => {
-      console.log("Error sending mail", e);
-      return false;
-    });
+  return sendEmail(user.email, "Dein Login Code", template);
+};
+
+export const sendNotificationEmail = async (
+  acceptor: User,
+  receiver: User
+): Promise<boolean> => {
+  const template = renderNotificationTemplate(receiver.firstname, acceptor);
+
+  if (IS_OFFLINE) {
+    console.log(template);
+    return true;
+  }
+
+  return sendEmail(receiver.email, "Dein Paket ist da", template);
 };

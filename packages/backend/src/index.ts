@@ -5,6 +5,7 @@ import {
   ApolloServerPluginLandingPageGraphQLPlayground,
 } from "apollo-server-core";
 import { ApolloServer } from "apollo-server-lambda";
+import { APIGatewayProxyHandlerV2 } from "aws-lambda";
 import { parse } from "cookie";
 import { buildSchemaSync } from "type-graphql";
 
@@ -12,6 +13,7 @@ import { Context, LambdaContext } from "./context";
 import { ParcelResolver } from "./graphql/parcel.resolver";
 import { UserResolver } from "./graphql/user.resolver";
 import { userByToken } from "./services/user.service";
+import { handleMockRequest } from "./services/mock.service";
 
 const { STAGE, IS_OFFLINE } = process.env;
 
@@ -54,11 +56,27 @@ const server = new ApolloServer({
   plugins: [graphQLPlayground],
 });
 
-export const handler = server.createHandler({
-  expressGetMiddlewareOptions: {
-    cors: {
-      origin: IS_OFFLINE && "http://localhost:8080",
-      credentials: Boolean(IS_OFFLINE),
+export const handler: APIGatewayProxyHandlerV2 = async (
+  event,
+  context,
+  callback
+) => {
+  if (event.queryStringParameters?.mock) {
+    return {
+      statusCode: 200,
+      headers: { "Content-Type": "text/html" },
+      body: handleMockRequest(event.queryStringParameters?.mock),
+    };
+  }
+
+  const handler = server.createHandler({
+    expressGetMiddlewareOptions: {
+      cors: {
+        origin: IS_OFFLINE && "http://localhost:8080",
+        credentials: Boolean(IS_OFFLINE),
+      },
     },
-  },
-});
+  });
+
+  return handler(event, context, callback);
+};
