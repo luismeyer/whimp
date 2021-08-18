@@ -1,0 +1,41 @@
+name: Deploy App
+
+on: 
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install Serverless Framework
+      run: npm install -g serverless
+
+    - name: Serverless AWS authentication
+      run: sls config credentials --provider aws --key ${{ secrets.AWS_ACCESS_KEY_ID }} --secret ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    - name: Install
+      run: yarn
+
+    - name: Build
+      env:
+        STAGE: prod
+      run: yarn build
+
+    - name: Deploy Backend
+      run: sls deploy --stage prod
+
+    - name: Deploy Frontend
+      run: sls client deploy --stage prod
