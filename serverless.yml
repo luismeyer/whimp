@@ -15,6 +15,7 @@ provider:
     BUCKET_NAME: ${self:service}-${self:custom.stage}-image-bucket
     STAGE: ${self:custom.stage}
     SES_EMAIL: ${env:SES_EMAIL, file(.env.json):SES_EMAIL}
+    DEBUG: ${env:DEBUG, file(.env.json):DEBUG}
   apiGateway:
     binaryMediaTypes:
       - '*/*'

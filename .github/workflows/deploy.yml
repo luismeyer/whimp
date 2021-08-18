@@ -10,6 +10,7 @@ jobs:
     env:
       SES_EMAIL: ${{ secrets.SES_EMAIL }}
       STAGE: prod
+      DEBUG: false
     name: deploy
     runs-on: ubuntu-latest
     strategy:

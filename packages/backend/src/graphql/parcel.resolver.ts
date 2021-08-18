@@ -12,6 +12,8 @@ import {
 } from "../services/parcel.service";
 import { userById, usersByAdress } from "../services/user.service";
 
+const { DEBUG } = process.env;
+
 @Resolver()
 export class ParcelResolver {
   @Query(() => [User], { nullable: true })
@@ -51,7 +53,9 @@ export class ParcelResolver {
 
     const text = await detectText(filename);
 
-    await deleteItem(filename);
+    if (!DEBUG) {
+      await deleteItem(filename);
+    }
 
     if (!text) {
       return [];
