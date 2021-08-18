@@ -42,7 +42,7 @@ export class UserResolver {
 
     ctx.express.res.setHeader(
       "Set-Cookie",
-      `${authCookie}=${newUser.token ?? ""}`
+      `${authCookie}=${newUser.token ?? ""};max-age=604800`
     );
 
     return newUser;

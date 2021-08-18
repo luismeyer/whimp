@@ -14,7 +14,7 @@ export const Webcam = React.forwardRef<DefaultWebcam, {}>((_, ref) => {
         borderRadius: "4px",
         margin: "12px 0",
       }}
-      forceScreenshotSourceSize={true}
+      audio={false}
       screenshotFormat="image/png"
       ref={ref}
     />
