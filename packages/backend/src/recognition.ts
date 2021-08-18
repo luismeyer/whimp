@@ -1,6 +1,6 @@
-import { Rekognition } from 'aws-sdk';
+import { Rekognition } from "aws-sdk";
 
-import { bucketName } from './bucket';
+import { bucketName } from "./bucket";
 
 const rekognition = new Rekognition({
   region: "eu-central-1",
@@ -20,7 +20,11 @@ export const detectText = async (
     })
     .promise();
 
-  return TextDetections?.map(
-    (detection) => detection.DetectedText ?? ""
-  ).reduce((acc, text) => `${acc} ${text}`, "");
+  if (!TextDetections) {
+    return;
+  }
+
+  return TextDetections.filter((detection) => detection.Type === "WORD")
+    .map((detection) => detection.DetectedText ?? "")
+    .join(" ");
 };

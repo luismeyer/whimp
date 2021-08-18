@@ -1,35 +1,30 @@
-import { fuzzy, search } from 'fast-fuzzy';
+import Fuse from "fuse.js";
 
-import { User } from '../entities/user.entity';
+import { User } from "../entities/user.entity";
 
 export const findParcelOwnersByName = (
   users: User[],
   firstname: string,
   lastname: string
 ): User[] => {
-  const firstnameMatches = search(firstname, users, {
-    keySelector: (user) => user.firstname,
+  const fuse = new Fuse(users, {
+    keys: ["firstname", "lastname"],
   });
 
-  const lastnameMatches = search(lastname, users, {
-    keySelector: (user) => user.lastname,
-  });
-
-  const matches = [...firstnameMatches, ...lastnameMatches];
-
-  return matches.filter((elem, pos) => {
-    return matches.indexOf(elem) == pos;
-  });
+  return fuse
+    .search(firstname + " " + lastname, { limit: 3 })
+    .map((match) => match.item);
 };
 
 export const findParcelOwnerByText = (
   users: User[],
   parcelText: string
 ): User[] => {
-  return users.filter((user) => {
-    const firstNameRanking = fuzzy(user.firstname, parcelText);
-    const lastNameRanking = fuzzy(user.lastname, parcelText);
+  console.log(parcelText);
 
-    return firstNameRanking + lastNameRanking > 1.5;
+  const fuse = new Fuse(users, {
+    keys: ["firstname", "lastname"],
   });
+
+  return fuse.search(parcelText, { limit: 3 }).map((match) => match.item);
 };

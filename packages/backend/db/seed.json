@@ -17,23 +17,11 @@
     "lastname": "Meyer",
     "email": "lynn_meyer@outlook.de",
     "type": "User",
-    "token": "456"
-  },
-  {
-    "id": "789",
-    "firstname": "Dennis",
-    "lastname": "Kaske",
-    "email": "dennis@kaske.org",
-    "type": "User",
-    "token": "789"
-  },
-  {
-    "id": "eknoktrpo",
-    "firstname": "Dennis",
-    "lastname": "Wächter",
-    "email": "dennis@wachter.org",
-    "type": "User",
-    "token": "gtrg"
+    "token": "456",
+    "street": "Prätoriusweg",
+    "houseNumber": "14",
+    "postalCode": "20255",
+    "floor": 1
   },
   {
     "id": "safmfewpü",
