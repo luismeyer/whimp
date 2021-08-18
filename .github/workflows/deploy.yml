@@ -7,6 +7,9 @@ on:
 
 jobs:
   deploy:
+    env:
+      SES_EMAIL: ${{ secrets.SES_EMAIL }}
+      STAGE: prod
     name: deploy
     runs-on: ubuntu-latest
     strategy:
@@ -30,13 +33,9 @@ jobs:
       run: yarn
 
     - name: Build
-      env:
-        STAGE: prod
       run: yarn build
 
     - name: Deploy Backend
-      env:
-        SES_EMAIL: ${{ secrets.SES_EMAIL }}
       run: sls deploy --stage prod
 
     - name: Deploy Frontend
